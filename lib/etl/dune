@@ -1,0 +1,5 @@
+(library
+ (name etl)
+ (libraries core cohttp cohttp-lwt-unix rss models)
+ (preprocess
+  (pps ppx_deriving.show)))

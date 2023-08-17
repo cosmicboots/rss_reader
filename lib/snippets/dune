@@ -1,0 +1,5 @@
+(library
+ (name snippets)
+ (libraries tyxml core hx lwt dream models)
+ (preprocess
+  (pps lwt_ppx)))

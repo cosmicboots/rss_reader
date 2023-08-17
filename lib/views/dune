@@ -1,0 +1,5 @@
+(library
+ (name views)
+ (libraries dream models tyxml hx rss snippets)
+ (preprocess
+  (pps ppx_deriving.show)))

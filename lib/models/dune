@@ -1,0 +1,5 @@
+(library
+ (name models)
+ (libraries core petrol)
+ (preprocess
+  (pps ppx_deriving.show)))
