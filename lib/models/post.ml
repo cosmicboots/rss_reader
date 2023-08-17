@@ -73,8 +73,8 @@ let insert_post
             := s
                @@ List.fold
                     ~f:(fun acc x -> acc ^ "," ^ x)
-                    ~init:""
-                    categories_
+                    ~init:(Option.value ~default:"" (List.hd categories_))
+                    (Option.value ~default:[] (List.tl categories_))
         ]
   |> Request.make_zero
   |> Petrol.exec db

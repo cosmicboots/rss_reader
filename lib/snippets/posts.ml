@@ -29,5 +29,16 @@ let get req =
   let id = int_of_string @@ Dream.param req "post_id" in
   let* itm = Dream.sql req @@ Models.Post.get_post ~id in
   let* itm = Caqti_lwt.or_fail itm in
-  Lwt.return Html.(div [ h1 [ txt itm.title ]; p [ txt itm.desc ] ])
+  Lwt.return
+    Html.(
+      div
+        [ h1 [ txt itm.title ]
+        ; a ~a:[ a_href itm.guid; a_target "_blank" ] [ txt itm.guid ]
+        ; br ()
+        ; span [ txt "Categories:" ]
+        ; ul ~a:[ a_class [ "list-disc" ] ]
+          @@ List.map ~f:(fun cat -> li [ txt cat ]) itm.categories
+        ; hr ()
+        ; p [ txt itm.desc ]
+        ])
 ;;

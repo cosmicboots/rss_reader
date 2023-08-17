@@ -30,13 +30,20 @@ let scripts () =
 let sidebar req =
   let open Lwt.Syntax in
   let* posts = Snippets.Posts.list req in
-  Lwt.return Html.(
-    div
-      ~a:
-        [ a_class
-            [ "col-span-1"; "bg-slate-200"; "rounded-lg"; "px-2"; "py-4" ]
-        ]
-      [ h1 [ txt "Article List" ]; posts ])
+  Lwt.return
+    Html.(
+      div
+        ~a:
+          [ a_class
+              [ "col-span-1"
+              ; "bg-slate-200"
+              ; "rounded-lg"
+              ; "px-2"
+              ; "py-4"
+              ; "overflow-scroll"
+              ]
+          ]
+        [ h1 [ txt "Article List" ]; posts ])
 ;;
 
 let setup_page req title_ body_ =
@@ -48,6 +55,9 @@ let setup_page req title_ body_ =
        html
          (head (title @@ txt title_) @@ scripts ())
          (body
-            ~a:[ a_class [ "grid grid-cols-4 gap-4 m-4" ] ]
+            ~a:
+              [ a_class [ "grid grid-cols-4 gap-4 m-4" ]
+              ; a_style "height: 100%; margin: 0; padding: 10px;"
+              ]
             [ sidebar; body_ ]))
 ;;

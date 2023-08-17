@@ -9,10 +9,17 @@ let page _req =
     div
       ~a:
         [ a_class
-            [ "col-start-2"; "col-end-5"; "bg-slate-200"; "rounded-lg"; "p-4" ]
+            [ "col-start-2"
+            ; "col-end-5"
+            ; "bg-slate-200"
+            ; "rounded-lg"
+            ; "p-4"
+            ; "overflow-scroll"
+            ]
         ]
-      [ h1 [ txt "Article Content" ]
-      ; div ~a:[ a_id "article-content" ] [ p [ txt "Hello world" ] ]
+      [ div
+          ~a:[ a_id "article-content" ]
+          [ p [ em [ txt "Choose an article on the left" ] ] ]
       ])
 ;;
 
