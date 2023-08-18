@@ -41,6 +41,7 @@ let get req =
   Lwt.return
     Html.(
       div
+        ~a:[ a_class [ "max-w-screen-md"; "m-auto" ] ]
         ([ h1 [ txt itm.title ]
          ; a
              ~a:
@@ -63,7 +64,19 @@ let get req =
               ]
             else [])
          @ [ div
-               ~a:[ a_class [ "bg-slate-100"; "dark:bg-slate-900" ] ]
-               [ txt itm.desc ]
+               ~a:
+                 [ a_class
+                     [ "bg-slate-100"
+                     ; "dark:bg-slate-900"
+                     ; "p-4"
+                     ; "rounded-xl"
+                     ; "border-2"
+                     ; "dark:border-slate-700"
+                     ; "max-w-prose"
+                     ; "m-auto"
+                     ]
+                 ; a_style "overflow: auto"
+                 ]
+               [ Unsafe.data itm.desc ]
            ]))
 ;;

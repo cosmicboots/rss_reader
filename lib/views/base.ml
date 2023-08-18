@@ -9,20 +9,39 @@ let scripts () =
     ; style
         ~a:[ Unsafe.string_attrib "type" "text/tailwindcss" ]
         [ txt
-            "@layer base {\n\
-            \   h1 {\n\
-            \      @apply text-3xl;\n\
-            \      @apply my-4;\n\
-            \   }\n\
-            \   h2 {\n\
-            \      @apply text-2xl;\n\
-            \      @apply my-4;\n\
-            \   }\n\
-            \   h3 {\n\
-            \      @apply text-xl;\n\
-            \      @apply my-4;\n\
-            \    }\n\
-             }"
+            {|
+            @layer base {
+                h1 {
+                    @apply text-3xl;
+                    @apply my-4;
+                }
+                h2 {
+                    @apply text-2xl;
+                    @apply my-4;
+                }
+                h3 {
+                    @apply text-xl;
+                    @apply my-4;
+                }
+                ul {
+                    @apply list-disc;
+                    @apply list-inside;
+                    @apply m-2;
+                }
+                ol {
+                    @apply list-decimal;
+                    @apply list-inside;
+                    @apply m-2;
+                }
+                pre {
+                    @apply my-2;
+                    overflow: auto;
+                }
+                p {
+                    @apply my-2;
+                }
+            }
+            |}
         ]
     ]
 ;;
