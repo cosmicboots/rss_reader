@@ -50,10 +50,22 @@ let load_chan db (title, guid, channel_id, desc, categories) =
   Models.Post.insert_post ~title ~guid ~channel_id ~desc ~categories db
 ;;
 
-let run ~chan_id db =
+let run ?chan_id db =
   let open Lwt.Syntax in
-  let* feed_body = get_feed ~id:chan_id db in
-  let* feed_body = Caqti_lwt.or_fail feed_body in
-  let raw_items = translate_chan ~chan_id feed_body in
-  Lwt_list.iter_s (fun x -> load_chan db x >>= Caqti_lwt.or_fail) raw_items
+  let* chan_ids =
+    match chan_id with
+    | Some x -> Lwt.return [ x ]
+    | None ->
+      let* channels = Models.Channel.get_channels db in
+      let* channels = Caqti_lwt.or_fail channels in
+      Lwt.return @@ List.map ~f:(fun x -> x.id) channels
+  in
+  Lwt_list.iter_s
+    (fun chan_id ->
+      printf "Checking channel [%d]\n" chan_id;
+      let* feed_body = get_feed ~id:chan_id db in
+      let* feed_body = Caqti_lwt.or_fail feed_body in
+      let raw_items = translate_chan ~chan_id feed_body in
+      Lwt_list.iter_s (fun x -> load_chan db x >>= Caqti_lwt.or_fail) raw_items)
+    chan_ids
 ;;

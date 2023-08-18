@@ -2,4 +2,4 @@
  (name snippets)
  (libraries tyxml core hx lwt dream models)
  (preprocess
-  (pps lwt_ppx)))
+  (pps ppx_deriving.show lwt_ppx)))

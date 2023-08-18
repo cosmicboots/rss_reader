@@ -20,7 +20,7 @@ let run_etl () =
     let* conn = Caqti_lwt.connect @@ Uri.of_string sql_uri in
     let* () = Petrol.StaticSchema.initialise Models.Schema.schema conn in
     let open Lwt.Syntax in
-    let* () = Etl.run ~chan_id:1 conn in
+    let* () = Etl.run conn in
     Lwt.return_ok ()
   in
   let _ = Lwt_main.run f in

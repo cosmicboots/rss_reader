@@ -14,6 +14,7 @@ let api_routes : Dream.route list =
 
 let routes : Dream.route list =
   [ Dream.get "/" Views.Index.get
+  ; Dream.get "/settings" Views.Settings.get
   ; Dream.get "/static/**" @@ Dream.static "static/"
   ; Dream.scope "/api" [ Dream.origin_referrer_check ] api_routes
   ; Dream_livereload.route ()

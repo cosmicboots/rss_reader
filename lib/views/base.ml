@@ -27,28 +27,21 @@ let scripts () =
     ]
 ;;
 
-let sidebar req =
-  let open Lwt.Syntax in
-  let* posts = Snippets.Posts.list req in
-  Lwt.return
-    Html.(
-      div
-        ~a:
-          [ a_class
-              [ "col-span-1"
-              ; "bg-slate-200"
-              ; "rounded-lg"
-              ; "px-2"
-              ; "py-4"
-              ; "overflow-scroll"
-              ]
-          ]
-        [ h1 [ txt "Article List" ]; posts ])
+let toolbar () =
+  Html.(
+    div (* Toolbar div *)
+      ~a:[ a_class [ "space-x-2"; "px-2" ] ]
+      [ a
+          ~a:[ a_href "/"; a_class [ "text-xl"; "font-sans" ] ]
+          [ txt "Navbar" ]
+      ; a ~a:[ a_href "/new-feed" ] [ txt "Add Feed" ]
+      ; a ~a:[ a_href "/settings" ] [ txt "Settings" ]
+      ])
 ;;
 
-let setup_page req title_ body_ =
+let setup_page ~title:title_ body =
   let open Lwt.Syntax in
-  let* sidebar = sidebar req in
+  let* body_ = body in
   Dream.html
   @@ elt_to_string
   @@ Html.(
@@ -56,8 +49,8 @@ let setup_page req title_ body_ =
          (head (title @@ txt title_) @@ scripts ())
          (body
             ~a:
-              [ a_class [ "grid grid-cols-4 gap-4 m-4" ]
-              ; a_style "height: 100%; margin: 0; padding: 10px;"
+              [ a_class [ "grid" ]
+              ; a_style "height: 100vh; grid-template-rows: auto 1fr;"
               ]
-            [ sidebar; body_ ]))
+            [ toolbar (); body_ ]))
 ;;
