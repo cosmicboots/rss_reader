@@ -29,6 +29,5 @@ let get req =
   let* feeds = feed_manager req in
   let* feeds = Caqti_lwt.or_fail feeds in
   setup_page ~title:"Settings"
-  @@ Lwt.return
-       Html.(div [ feeds; span [ txt "Hello from the settings page" ] ])
+  @@ Lwt.return Html.(div [ h1 [ txt "Current Feeds" ]; feeds ])
 ;;

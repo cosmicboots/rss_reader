@@ -5,6 +5,15 @@ let button_style () =
   [ "rounded-lg"; "bg-slate-300"; "dark:bg-slate-700"; "p-1" ]
 ;;
 
+let input_style () =
+  [ "rounded-md"
+  ; "border-2"
+  ; "px-2"
+  ; "dark:bg-slate-900"
+  ; "dark:text-slate-100"
+  ]
+;;
+
 let feed_elt (feed : Models.Channel.t) =
   Html.(
     tr
@@ -25,9 +34,23 @@ let feed_elt (feed : Models.Channel.t) =
 let feed_edit_elt (feed : Models.Channel.t) =
   Html.(
     tr
-      [ td [ input ~a:[ a_name "name"; a_value feed.name ] () ]
-      ; td [ input ~a:[ a_name "desc"; a_value feed.desc ] () ]
-      ; td [ input ~a:[ a_name "uri"; a_value feed.uri ] () ]
+      [ td
+          [ input
+              ~a:
+                [ a_class @@ input_style (); a_name "name"; a_value feed.name ]
+              ()
+          ]
+      ; td
+          [ input
+              ~a:
+                [ a_class @@ input_style (); a_name "desc"; a_value feed.desc ]
+              ()
+          ]
+      ; td
+          [ input
+              ~a:[ a_class @@ input_style (); a_name "uri"; a_value feed.uri ]
+              ()
+          ]
       ; td
           [ button
               ~a:
