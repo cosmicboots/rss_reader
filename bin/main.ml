@@ -9,7 +9,7 @@ let start_dream port =
   @@ Dream.logger
   @@ Dream.sql_pool sql_uri
   @@ Dream.memory_sessions
-  @@ Dream_livereload.inject_script ()
+  (*@@ Dream_livereload.inject_script ()*)
   @@ Dream.router Router.routes
 ;;
 
