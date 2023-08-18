@@ -32,6 +32,10 @@ let target target =
   Html.Unsafe.string_attrib "hx-target" @@ Target.to_string target
 ;;
 
+let include_ elt =
+  Html.Unsafe.string_attrib "hx-include" @@ Target.to_string elt
+;;
+
 let get path = Html.Unsafe.string_attrib "hx-get" path
 let post path = Html.Unsafe.string_attrib "hx-post" path
 let put path = Html.Unsafe.string_attrib "hx-put" path
