@@ -11,7 +11,7 @@ let list req =
     Html.(
       div
       @@ List.map
-           ~f:(fun itm ->
+           ~f:(fun (chan_name, itm) ->
              div
                ~a:
                  [ a_class
@@ -26,7 +26,11 @@ let list req =
                  ; Hx.target (`Css "#article-content")
                  ; Hx.swap `InnerHTML
                  ]
-               [ span [ txt itm.title ] ])
+               [ span
+                   ~a:[ a_class [ "font-bold" ] ]
+                   [ txt @@ chan_name ^ ": " ]
+               ; span [ txt itm.title ]
+               ])
            itms)
 ;;
 

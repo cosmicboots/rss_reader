@@ -82,10 +82,18 @@ let insert_post
 
 let get_posts db =
   let open Lwt_result.Infix in
-  Query.select all_fields ~from:post_table
+  let chan_name, chan_name_ref =
+    Expr.(as_ Channel.name ~name:"channel_name")
+  in
+  let chan_id, chan_id_ref = Expr.(as_ Channel.id ~name:"channel_id") in
+  Query.select Expr.(chan_name_ref :: all_fields) ~from:post_table
+  |> Query.join
+       ~op:Query.LEFT
+       ~on:Expr.(channel_id = chan_id_ref)
+       (Query.select [ chan_id; chan_name ] ~from:Channel.channel_table)
   |> Request.make_many
   |> Petrol.collect_list db
-  >|= List.map ~f:t_of_tuple
+  >|= List.map ~f:(fun (chan_name, x) -> chan_name, t_of_tuple x)
 ;;
 
 let get_post ~id:id_ db =
