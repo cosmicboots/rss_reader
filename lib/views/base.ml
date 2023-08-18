@@ -30,10 +30,29 @@ let scripts () =
 let toolbar () =
   Html.(
     div (* Toolbar div *)
-      ~a:[ a_class [ "space-x-2"; "px-2" ] ]
+      ~a:
+        [ a_class
+            [ "space-x-2"
+            ; "px-2"
+            ; "py-1"
+            ; "dark:bg-slate-900"
+            ; "dark:text-slate-200"
+            ]
+        ]
       [ a
-          ~a:[ a_href "/"; a_class [ "text-xl"; "font-sans" ] ]
-          [ txt "Navbar" ]
+          ~a:
+            [ a_href "/"
+            ; a_class
+                [ "text-xl"
+                ; "font-sans"
+                ; "px-2"
+                ; "dark:text-slate-100"
+                ; "bg-slate-200"
+                ; "dark:bg-slate-800"
+                ; "rounded-lg"
+                ]
+            ]
+          [ txt "RSS Reader" ]
       ; a ~a:[ a_href "/new-feed" ] [ txt "Add Feed" ]
       ; a ~a:[ a_href "/settings" ] [ txt "Settings" ]
       ])
@@ -49,7 +68,7 @@ let setup_page ~title:title_ body =
          (head (title @@ txt title_) @@ scripts ())
          (body
             ~a:
-              [ a_class [ "grid" ]
+              [ a_class [ "grid"; "dark:bg-slate-900"; "dark:text-slate-100" ]
               ; a_style "height: 100vh; grid-template-rows: auto 1fr;"
               ]
             [ toolbar (); body_ ]))

@@ -14,7 +14,13 @@ let list req =
            ~f:(fun itm ->
              div
                ~a:
-                 [ a_class [ "p-2"; "bg-slate-100"; "border-2" ]
+                 [ a_class
+                     [ "p-2"
+                     ; "bg-slate-100"
+                     ; "dark:bg-slate-900"
+                     ; "border-2"
+                     ; "dark:border-slate-800"
+                     ]
                  ; a_style "cursor: pointer;"
                  ; Hx.get @@ sprintf "/api/posts/%d" itm.id
                  ; Hx.target (`Css "#article-content")
@@ -32,7 +38,6 @@ let get req =
   let cat_items =
     List.map ~f:(fun cat -> Html.(li [ txt cat ])) itm.categories
   in
-  Dream.log "Cate items: %s" @@ [%show: string list] itm.categories;
   Lwt.return
     Html.(
       div
@@ -41,7 +46,12 @@ let get req =
              ~a:
                [ a_href itm.guid
                ; a_target "_blank"
-               ; a_class [ "underline"; "text-sky-400" ]
+               ; a_class
+                   [ "underline"
+                   ; "text-sky-600"
+                   ; "dark:text-sky-400"
+                   ; "hover:text-sky-500"
+                   ]
                ]
              [ txt itm.guid ]
          ; br ()
@@ -52,5 +62,8 @@ let get req =
               ; ul ~a:[ a_class [ "list-disc" ] ] cat_items
               ]
             else [])
-         @ [ div ~a:[ a_class [ "bg-slate-100" ] ] [ txt itm.desc ] ]))
+         @ [ div
+               ~a:[ a_class [ "bg-slate-100"; "dark:bg-slate-900" ] ]
+               [ txt itm.desc ]
+           ]))
 ;;

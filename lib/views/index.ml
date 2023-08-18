@@ -10,7 +10,9 @@ let sidebar req =
   Lwt.return
     Html.(
       div
-        ~a:[ a_class [ "bg-slate-200"; "overflow-scroll" ] ]
+        ~a:
+          [ a_class [ "bg-slate-200"; "dark:bg-slate-800"; "overflow-scroll" ]
+          ]
         [ h1 ~a:[ a_class [ "px-4" ] ] [ txt "Article List" ]; posts ])
 ;;
 
@@ -18,7 +20,14 @@ let content () =
   Html.(
     div
       ~a:
-        [ a_class [ "col-start-2"; "bg-slate-200"; "p-4"; "overflow-scroll" ] ]
+        [ a_class
+            [ "col-start-2"
+            ; "bg-slate-200"
+            ; "dark:bg-slate-800"
+            ; "p-4"
+            ; "overflow-scroll"
+            ]
+        ]
       [ div
           ~a:[ a_id "article-content" ]
           [ p [ em [ txt "Choose an article on the left" ] ] ]
