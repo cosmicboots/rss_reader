@@ -39,6 +39,7 @@ let include_ elt =
 let get path = Html.Unsafe.string_attrib "hx-get" path
 let post path = Html.Unsafe.string_attrib "hx-post" path
 let put path = Html.Unsafe.string_attrib "hx-put" path
+let delete path = Html.Unsafe.string_attrib "hx-delete" path
 let confirm msg = Html.Unsafe.string_attrib "hx-confirm" msg
 
 module TriggerEvent = struct

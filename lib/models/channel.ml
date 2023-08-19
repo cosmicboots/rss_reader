@@ -70,3 +70,10 @@ let get_channel ~id:id_ db =
   |> Petrol.find db
   >|= fun (id, (name, (uri, (desc, ())))) -> { id; name; uri; desc }
 ;;
+
+let delete_channel ~id:id_ db =
+  Query.delete ~from:channel_table
+  |> Query.where Expr.(id = i id_)
+  |> Request.make_zero
+  |> Petrol.exec db
+;;

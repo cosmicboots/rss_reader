@@ -14,6 +14,13 @@ let feed_elt (feed : Models.Channel.t) =
                 ; Hx.get @@ sprintf "/api/feeds/%d/edit" feed.id
                 ]
               [ txt "Edit" ]
+          ; button
+              ~a:
+                [ a_class @@ Style.button_style ()
+                ; Hx.confirm "Are you sure you want to delete?"
+                ; Hx.delete @@ sprintf "/api/feeds/%d" feed.id
+                ]
+              [ txt "Delete" ]
           ]
       ])
 ;;
@@ -113,6 +120,14 @@ let post req =
              ]
            [ txt "Success!" ])
   | _ -> Lwt.return @@ Html.(span [ txt "ERROR" ])
+;;
+
+let delete req =
+  let open Lwt.Syntax in
+  let id = int_of_string @@ Dream.param req "feed_id" in
+  let* res = Dream.sql req @@ Models.Channel.delete_channel ~id in
+  let* () = Caqti_lwt.or_fail res in
+  Lwt.return ()
 ;;
 
 let get_edit req =

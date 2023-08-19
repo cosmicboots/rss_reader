@@ -6,6 +6,12 @@ let api_handler snip req =
   Dream.html @@ elt_to_string res
 ;;
 
+let unit_api_handler snip req =
+  let open Lwt.Syntax in
+  let* () = snip req in
+  Dream.empty `OK
+;;
+
 let api_routes : Dream.route list =
   [ Dream.get "/posts" @@ api_handler @@ Snippets.Posts.list
   ; Dream.get "/posts/:post_id" @@ api_handler @@ Snippets.Posts.get
@@ -13,6 +19,7 @@ let api_routes : Dream.route list =
   ; Dream.get "/feeds/:feed_id/edit" @@ api_handler @@ Snippets.Feed.get_edit
   ; Dream.put "/feeds/:feed_id" @@ api_handler @@ Snippets.Feed.put
   ; Dream.post "/feeds" @@ api_handler @@ Snippets.Feed.post
+  ; Dream.delete "/feeds/:feed_id" @@ unit_api_handler @@ Snippets.Feed.delete
   ]
 ;;
 
