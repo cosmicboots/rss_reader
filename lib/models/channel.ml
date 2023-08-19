@@ -48,6 +48,20 @@ let get_channels ?name:name_ db =
     { id; name; uri; desc })
 ;;
 
+let update_channel ~id:id_ ?name:name_ ?desc:desc_ ?uri:uri_ db =
+  let update_expr = ref [] in
+  List.iter
+    ~f:(fun y ->
+      Option.iter ~f:(fun x ->
+        update_expr := Expr.((fst y := s x) :: !update_expr))
+      @@ snd y)
+    [ name, name_; desc, desc_; uri, uri_ ];
+  Query.update ~table:channel_table ~set:!update_expr
+  |> Query.where Expr.(id = i id_)
+  |> Request.make_zero
+  |> Petrol.exec db
+;;
+
 let get_channel ~id:id_ db =
   let open Lwt_result.Infix in
   Query.select all_fields ~from:channel_table

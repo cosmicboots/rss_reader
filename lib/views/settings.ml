@@ -29,5 +29,18 @@ let get req =
   let* feeds = feed_manager req in
   let* feeds = Caqti_lwt.or_fail feeds in
   setup_page ~title:"Settings"
-  @@ Lwt.return Html.(div [ h1 [ txt "Current Feeds" ]; feeds ])
+  @@ Lwt.return
+       Html.(
+         div
+           [ h2 [ txt "Current Feeds" ]
+           ; feeds
+           ; h2 [ txt "Add a Feed" ]
+           ; p
+               [ em
+                   [ txt
+                       "There will be a form here to add a feed to the \
+                        database"
+                   ]
+               ]
+           ])
 ;;

@@ -72,7 +72,6 @@ let toolbar () =
                 ]
             ]
           [ txt "RSS Reader" ]
-      ; a ~a:[ a_href "/new-feed" ] [ txt "Add Feed" ]
       ; a ~a:[ a_href "/settings" ] [ txt "Settings" ]
       ])
 ;;

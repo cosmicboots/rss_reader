@@ -87,6 +87,10 @@ let put req =
     let name = find "name" in
     let desc = find "desc" in
     let uri = find "uri" in
+    let* res =
+      Dream.sql req @@ Models.Channel.update_channel ~id ~name ~desc ~uri
+    in
+    let* () = Caqti_lwt.or_fail res in
     Lwt.return @@ feed_elt { id; name; desc; uri }
   | _ -> Lwt.return @@ Html.(tr [ td [ txt "ERROR" ] ])
 ;;
