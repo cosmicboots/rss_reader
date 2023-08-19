@@ -12,6 +12,7 @@ let api_routes : Dream.route list =
   ; Dream.get "/feeds/:feed_id" @@ api_handler @@ Snippets.Feed.get
   ; Dream.get "/feeds/:feed_id/edit" @@ api_handler @@ Snippets.Feed.get_edit
   ; Dream.put "/feeds/:feed_id" @@ api_handler @@ Snippets.Feed.put
+  ; Dream.post "/feeds" @@ api_handler @@ Snippets.Feed.post
   ]
 ;;
 

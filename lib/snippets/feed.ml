@@ -1,19 +1,6 @@
 open Core
 open Tyxml
 
-let button_style () =
-  [ "rounded-lg"; "bg-slate-300"; "dark:bg-slate-700"; "p-1" ]
-;;
-
-let input_style () =
-  [ "rounded-md"
-  ; "border-2"
-  ; "px-2"
-  ; "dark:bg-slate-900"
-  ; "dark:text-slate-100"
-  ]
-;;
-
 let feed_elt (feed : Models.Channel.t) =
   Html.(
     tr
@@ -23,7 +10,7 @@ let feed_elt (feed : Models.Channel.t) =
       ; td
           [ button
               ~a:
-                [ a_class @@ button_style ()
+                [ a_class @@ Style.button_style ()
                 ; Hx.get @@ sprintf "/api/feeds/%d/edit" feed.id
                 ]
               [ txt "Edit" ]
@@ -37,30 +24,40 @@ let feed_edit_elt (feed : Models.Channel.t) =
       [ td
           [ input
               ~a:
-                [ a_class @@ input_style (); a_name "name"; a_value feed.name ]
+                [ a_class @@ Style.input_style ()
+                ; a_name "name"
+                ; a_value feed.name
+                ]
               ()
           ]
       ; td
           [ input
               ~a:
-                [ a_class @@ input_style (); a_name "desc"; a_value feed.desc ]
+                [ a_class @@ Style.input_style ()
+                ; a_name "desc"
+                ; a_value feed.desc
+                ]
               ()
           ]
       ; td
           [ input
-              ~a:[ a_class @@ input_style (); a_name "uri"; a_value feed.uri ]
+              ~a:
+                [ a_class @@ Style.input_style ()
+                ; a_name "uri"
+                ; a_value feed.uri
+                ]
               ()
           ]
       ; td
           [ button
               ~a:
-                [ a_class @@ button_style ()
+                [ a_class @@ Style.button_style ()
                 ; Hx.get @@ sprintf "/api/feeds/%d" feed.id
                 ]
               [ txt "Cancel" ]
           ; button
               ~a:
-                [ a_class @@ button_style ()
+                [ a_class @@ Style.button_style ()
                 ; Hx.include_ (`Closest "tr")
                 ; Hx.put @@ sprintf "/api/feeds/%d" feed.id
                 ]
@@ -93,6 +90,29 @@ let put req =
     let* () = Caqti_lwt.or_fail res in
     Lwt.return @@ feed_elt { id; name; desc; uri }
   | _ -> Lwt.return @@ Html.(tr [ td [ txt "ERROR" ] ])
+;;
+
+let post req =
+  let open Lwt.Syntax in
+  let* form = Dream.form ~csrf:false req in
+  match form with
+  | `Ok form_data ->
+    let find = List.Assoc.find_exn ~equal:String.equal form_data in
+    let name = find "name" in
+    let desc = find "desc" in
+    let uri = find "uri" in
+    let* res =
+      Dream.sql req @@ Models.Channel.insert_channel ~name ~desc ~uri
+    in
+    let* () = Caqti_lwt.or_fail res in
+    Lwt.return
+    @@ Html.(
+         span
+           ~a:
+             [ a_class [ "p-2"; "rounded-lg"; "bg-sky-700"; "text-slate-200" ]
+             ]
+           [ txt "Success!" ])
+  | _ -> Lwt.return @@ Html.(span [ txt "ERROR" ])
 ;;
 
 let get_edit req =

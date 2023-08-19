@@ -24,6 +24,54 @@ let feed_manager req =
       @@ List.map ~f:Snippets.Feed.feed_elt feeds)
 ;;
 
+let new_feed () =
+  Html.(
+    form
+      ~a:
+        [ Hx.post "/api/feeds"
+        ; Hx.target @@ `Css "#form-msg"
+        ; Hx.swap `InnerHTML
+        ]
+      [ div ~a:[ a_id "form-msg" ] []
+      ; label ~a:[ a_label_for "name" ] [ txt "Name" ]
+      ; br ()
+      ; input
+          ~a:
+            [ a_class @@ Snippets.Style.input_style ()
+            ; a_name "name"
+            ; a_placeholder "Name"
+            ]
+          ()
+      ; br ()
+      ; label ~a:[ a_label_for "desc" ] [ txt "Description" ]
+      ; br ()
+      ; input
+          ~a:
+            [ a_class @@ Snippets.Style.input_style ()
+            ; a_name "desc"
+            ; a_placeholder "Description"
+            ]
+          ()
+      ; br ()
+      ; label ~a:[ a_label_for "uri" ] [ txt "URI" ]
+      ; br ()
+      ; input
+          ~a:
+            [ a_class @@ Snippets.Style.input_style ()
+            ; a_name "uri"
+            ; a_placeholder "URI"
+            ]
+          ()
+      ; br ()
+      ; button
+          ~a:
+            [ a_button_type `Submit
+            ; a_class @@ Snippets.Style.button_style ()
+            ]
+          [ txt "Add Feed" ]
+      ])
+;;
+
 let get req =
   let open Lwt.Syntax in
   let* feeds = feed_manager req in
@@ -32,15 +80,10 @@ let get req =
   @@ Lwt.return
        Html.(
          div
+           ~a:[ a_class [ "max-w-screen-md"; "mx-auto"; "px-8" ] ]
            [ h2 [ txt "Current Feeds" ]
            ; feeds
            ; h2 [ txt "Add a Feed" ]
-           ; p
-               [ em
-                   [ txt
-                       "There will be a form here to add a feed to the \
-                        database"
-                   ]
-               ]
+           ; new_feed ()
            ])
 ;;
