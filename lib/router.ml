@@ -1,4 +1,4 @@
-open Views.Utils
+open Snippets.Utils
 
 let api_handler snip req =
   let open Lwt.Syntax in

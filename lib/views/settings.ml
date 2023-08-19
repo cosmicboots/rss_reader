@@ -24,7 +24,7 @@ let feed_manager req =
       @@ List.map ~f:Snippets.Feed.feed_elt feeds)
 ;;
 
-let new_feed () =
+let new_feed req =
   Html.(
     form
       ~a:
@@ -32,7 +32,8 @@ let new_feed () =
         ; Hx.target @@ `Css "#form-msg"
         ; Hx.swap `InnerHTML
         ]
-      [ div ~a:[ a_id "form-msg" ] []
+      [ Snippets.Utils.csrf_tag req
+      ; div ~a:[ a_id "form-msg" ] []
       ; label ~a:[ a_label_for "name" ] [ txt "Name" ]
       ; br ()
       ; input
@@ -84,6 +85,6 @@ let get req =
            [ h2 [ txt "Current Feeds" ]
            ; feeds
            ; h2 [ txt "Add a Feed" ]
-           ; new_feed ()
+           ; new_feed req
            ])
 ;;

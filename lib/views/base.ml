@@ -1,6 +1,6 @@
 open Core
 open Tyxml
-open Utils
+open Snippets.Utils
 
 let scripts () =
   Html.

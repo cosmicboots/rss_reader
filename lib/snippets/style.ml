@@ -10,4 +10,3 @@ let input_style () =
   ; "dark:text-slate-100"
   ]
 ;;
-

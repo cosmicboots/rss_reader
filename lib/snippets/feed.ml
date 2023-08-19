@@ -25,7 +25,7 @@ let feed_elt (feed : Models.Channel.t) =
       ])
 ;;
 
-let feed_edit_elt (feed : Models.Channel.t) =
+let feed_edit_elt (feed : Models.Channel.t) req =
   Html.(
     tr
       [ td
@@ -56,7 +56,8 @@ let feed_edit_elt (feed : Models.Channel.t) =
               ()
           ]
       ; td
-          [ button
+          [ Utils.csrf_tag req
+          ; button
               ~a:
                 [ a_class @@ Style.button_style ()
                 ; Hx.get @@ sprintf "/api/feeds/%d" feed.id
@@ -83,7 +84,7 @@ let get req =
 
 let put req =
   let open Lwt.Syntax in
-  let* form = Dream.form ~csrf:false req in
+  let* form = Dream.form req in
   match form with
   | `Ok form_data ->
     let find = List.Assoc.find_exn ~equal:String.equal form_data in
@@ -101,7 +102,7 @@ let put req =
 
 let post req =
   let open Lwt.Syntax in
-  let* form = Dream.form ~csrf:false req in
+  let* form = Dream.form req in
   match form with
   | `Ok form_data ->
     let find = List.Assoc.find_exn ~equal:String.equal form_data in
@@ -135,5 +136,5 @@ let get_edit req =
   let id = int_of_string @@ Dream.param req "feed_id" in
   let* feed = Dream.sql req @@ Models.Channel.get_channel ~id in
   let* feed = Caqti_lwt.or_fail feed in
-  Lwt.return @@ feed_edit_elt feed
+  Lwt.return @@ feed_edit_elt feed req
 ;;
