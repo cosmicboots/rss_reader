@@ -1,0 +1,18 @@
+(library
+ (name sl)
+ (modules sl)
+ (libraries tyxml))
+
+(executable
+ (name sl_build)
+ (public_name sl_build)
+ (libraries core yojson ppx_deriving ppx_deriving_yojson str)
+ (modules sl_build)
+ (preprocess
+  (pps ppx_deriving.show ppx_deriving_yojson)))
+
+(rule
+ (deps web-types.json sl_build.exe)
+ (target sl.ml)
+ (action
+  (run sl_build %{target} %{deps})))
