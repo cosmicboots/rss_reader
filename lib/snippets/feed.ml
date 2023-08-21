@@ -56,7 +56,7 @@ let feed_edit_elt (feed : Models.Channel.t) req =
               ()
           ]
       ; td
-          [ Utils.csrf_tag req
+          [ Dream.csrf_tag req |> Unsafe.data
           ; button
               ~a:
                 [ a_class @@ Style.button_style ()

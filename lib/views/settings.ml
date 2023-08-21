@@ -32,7 +32,7 @@ let new_feed req =
         ; Hx.target @@ `Css "#form-msg"
         ; Hx.swap `InnerHTML
         ]
-      [ Snippets.Utils.csrf_tag req
+      [ Dream.csrf_tag req |> Unsafe.data
       ; div ~a:[ a_id "form-msg" ] []
       ; label ~a:[ a_label_for "name" ] [ txt "Name" ]
       ; br ()
