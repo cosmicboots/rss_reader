@@ -6,7 +6,14 @@
 (executable
  (name sl_build)
  (public_name sl_build)
- (libraries core yojson ppx_deriving ppx_deriving_yojson str)
+ (libraries
+  core
+  yojson
+  ppx_deriving
+  ppx_deriving_yojson
+  str
+  value_parser
+  camelsnakekebab)
  (modules sl_build)
  (preprocess
   (pps ppx_deriving.show ppx_deriving_yojson)))
@@ -16,4 +23,7 @@
  (target sl.ml)
  (mode promote)
  (action
-  (run sl_build %{target} %{deps})))
+  (run
+   sh
+   -c
+   "sl_build %{target} %{deps} && ocamlformat --inplace %{target}")))

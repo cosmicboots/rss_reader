@@ -41,23 +41,91 @@ let read_file ic =
   List.fold ~f:(fun acc x -> acc ^ "\n" ^ x) ~init:"" @@ List.rev @@ f [] ic
 ;;
 
+let safe_name name =
+  let reserved_words =
+    Str.regexp (String.concat ~sep:{|\||} [ "include"; "open"; "lazy" ])
+  in
+  Str.global_replace reserved_words {|\0_|} name
+;;
+
+let gen_attribute (attribute : attribute) =
+  let name = safe_name @@ Camelsnakekebab.lower_snake_case attribute.name in
+  let open Option in
+  let open Value_parser.Value_type in
+  attribute.value.type_
+  >>| Value_parser.Main.parse
+  >>| function
+  | BooleanT ->
+    sprintf
+      "let %s () = Tyxml.Html.Unsafe.string_attrib \"%s\" \"\""
+      name
+      attribute.name
+  | NumberT ->
+    sprintf
+      "let %s x = Tyxml.Html.Unsafe.int_attrib \"%s\" x"
+      name
+      attribute.name
+  | StringT ->
+    sprintf
+      "let %s x = Tyxml.Html.Unsafe.string_attrib \"%s\" x"
+      name
+      attribute.name
+  | List _ ->
+    sprintf
+      "let %s x = Tyxml.Html.Unsafe.space_sep_attrib \"%s\" x"
+      name
+      attribute.name
+  | String _ -> ""
+  | Const _ -> ""
+  | Union _ -> ""
+  | Function (_, _) -> ""
+  | Empty -> ""
+;;
+
+let gen_module (element : element) =
+  let name =
+    Camelsnakekebab.upper_camel_case
+    @@ String.chop_prefix_exn ~prefix:"sl-" element.name
+  in
+  let attributes = List.map ~f:gen_attribute element.attributes in
+  let attributes_str =
+    List.fold
+      ~f:(fun acc x ->
+        match x with
+        | Some "" -> acc
+        | Some x -> acc ^ x ^ ";;\n"
+        | None -> acc)
+      ~init:""
+      attributes
+  in
+  if String.length attributes_str > 0
+  then sprintf {|
+module %s = struct
+    %s
+end
+|} name attributes_str
+  else ""
+;;
+
 let elt_of_element (element : element) =
   let name = String.chop_prefix_exn ~prefix:"sl-" element.name in
   let name = String.substr_replace_all ~pattern:"-" ~with_:"_" name in
-  let reserved_words = Str.regexp {|include|} in
-  let name = Str.global_replace reserved_words {|\0_|} name in
+  let name = safe_name name in
+  let module_ = gen_module element in
   sprintf
     {|
 (** [%s children] will create a Shoelace component with [children] as children elements
 Docs: %s
 Attributes: %s *)
 let %s ?a children = Tyxml.Html.Unsafe.node "%s" ?a children
+%s
 |}
     name
     element.docs
     (String.concat ~sep:" " @@ List.map ~f:(fun x -> x.name) element.attributes)
     name
     element.name
+    module_
 ;;
 
 let () =
@@ -70,7 +138,8 @@ let () =
   let json = schema_of_yojson @@ Yojson.Safe.from_string content in
   (match json with
    | Ok json ->
-     printf "%s\n" @@ show_schema json;
+     let _ = show_schema json in
+     (*printf "%s\n" @@ show_schema json;*)
      List.iter
        ~f:(fun elt -> Stdlib.output_string oc @@ elt_of_element elt)
        json.contributions.html.elements
