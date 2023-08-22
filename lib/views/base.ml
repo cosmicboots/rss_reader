@@ -5,74 +5,36 @@ open Snippets.Utils
 let scripts () =
   Html.
     [ script ~a:[ a_src "https://unpkg.com/htmx.org@1.9.4" ] @@ txt ""
-    ; script ~a:[ a_src "https://cdn.tailwindcss.com" ] @@ txt ""
-    ; style
-        ~a:[ Unsafe.string_attrib "type" "text/tailwindcss" ]
-        [ txt
-            {|
-            @layer base {
-                h1 {
-                    @apply text-3xl;
-                    @apply my-4;
-                }
-                h2 {
-                    @apply text-2xl;
-                    @apply my-4;
-                }
-                h3 {
-                    @apply text-xl;
-                    @apply my-4;
-                }
-                ul {
-                    @apply list-disc;
-                    @apply list-inside;
-                    @apply m-2;
-                }
-                ol {
-                    @apply list-decimal;
-                    @apply list-inside;
-                    @apply m-2;
-                }
-                pre {
-                    @apply my-2;
-                    overflow: auto;
-                }
-                p {
-                    @apply my-2;
-                }
-            }
-            |}
-        ]
+    ; style [ txt {|
+:not(:defined) {
+  visibility: hidden;
+}
+|} ]
+    ; link
+        ~rel:[ `Stylesheet ]
+        ~href:
+          "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/dark.css"
+        ()
+    ; script
+        ~a:
+          [ Unsafe.string_attrib "type" "module"
+          ; a_src
+              "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/shoelace-autoloader.js"
+          ]
+      @@ txt ""
     ]
 ;;
 
 let toolbar () =
   Html.(
     div (* Toolbar div *)
-      ~a:
-        [ a_class
-            [ "space-x-2"
-            ; "px-2"
-            ; "py-1"
-            ; "dark:bg-slate-900"
-            ; "dark:text-slate-200"
-            ]
-        ]
-      [ a
-          ~a:
-            [ a_href "/"
-            ; a_class
-                [ "text-xl"
-                ; "font-sans"
-                ; "px-2"
-                ; "dark:text-slate-100"
-                ; "bg-slate-200"
-                ; "dark:bg-slate-800"
-                ; "rounded-lg"
-                ]
-            ]
+      ~a:[]
+      [ Sl.button
+          ~a:[ Unsafe.string_attrib "variant" "text"; a_href "/" ]
           [ txt "RSS Reader" ]
-      ; a ~a:[ a_href "/settings" ] [ txt "Settings" ]
+      ; Sl.button
+          ~a:[ Unsafe.string_attrib "variant" "text"; a_href "/settings" ]
+          [ txt "Settings" ]
       ])
 ;;
 
@@ -83,11 +45,7 @@ let setup_page ~title:title_ body =
   @@ elt_to_string
   @@ Html.(
        html
+         ~a:[ a_class [ "sl-theme-dark" ]; a_style "height:100%" ]
          (head (title @@ txt title_) @@ scripts ())
-         (body
-            ~a:
-              [ a_class [ "grid"; "dark:bg-slate-900"; "dark:text-slate-100" ]
-              ; a_style "height: 100vh; grid-template-rows: auto 1fr;"
-              ]
-            [ toolbar (); body_ ]))
+         (body ~a:[ a_style "height: 100%;" ] [ toolbar (); body_ ]))
 ;;

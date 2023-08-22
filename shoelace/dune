@@ -14,5 +14,6 @@
 (rule
  (deps web-types.json sl_build.exe)
  (target sl.ml)
+ (mode promote)
  (action
   (run sl_build %{target} %{deps})))

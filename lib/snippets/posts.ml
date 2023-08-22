@@ -9,28 +9,16 @@ let list req =
   Dream.log "Pulled %d items from the db" @@ List.length itms;
   Lwt.return
     Html.(
-      div
+      Sl.tree
       @@ List.map
            ~f:(fun (chan_name, itm) ->
-             div
+             Sl.tree_item
                ~a:
-                 [ a_class
-                     [ "p-2"
-                     ; "bg-slate-100"
-                     ; "dark:bg-slate-900"
-                     ; "border-2"
-                     ; "dark:border-slate-800"
-                     ]
-                 ; a_style "cursor: pointer;"
-                 ; Hx.get @@ sprintf "/api/posts/%d" itm.id
+                 [ Hx.get @@ sprintf "/api/posts/%d" itm.id
                  ; Hx.target (`Css "#article-content")
                  ; Hx.swap `InnerHTML
                  ]
-               [ span
-                   ~a:[ a_class [ "font-bold" ] ]
-                   [ txt @@ chan_name ^ ": " ]
-               ; span [ txt itm.title ]
-               ])
+               [ span [ txt @@ chan_name ^ ": " ^ itm.title ] ])
            itms)
 ;;
 
@@ -45,41 +33,22 @@ let get req =
   Lwt.return
     Html.(
       div
-        ~a:[ a_class [ "max-w-screen-md"; "m-auto" ] ]
         ([ h1 [ txt itm.title ]
-         ; a
-             ~a:
-               [ a_href itm.guid
-               ; a_target "_blank"
-               ; a_class
-                   [ "underline"
-                   ; "text-sky-600"
-                   ; "dark:text-sky-400"
-                   ; "hover:text-sky-500"
-                   ]
-               ]
-             [ txt itm.guid ]
+         ; a ~a:[ a_href itm.guid; a_target "_blank" ] [ txt itm.guid ]
          ; br ()
          ]
          @ (if List.length cat_items > 0
-            then
-              [ span [ txt "Categories:" ]
-              ; ul ~a:[ a_class [ "list-disc" ] ] cat_items
-              ]
+            then [ span [ txt "Categories:" ]; ul cat_items ]
             else [])
-         @ [ div
+         @ [ Sl.card
                ~a:
-                 [ a_class
-                     [ "bg-slate-100"
-                     ; "dark:bg-slate-900"
-                     ; "p-4"
-                     ; "rounded-xl"
-                     ; "border-2"
-                     ; "dark:border-slate-700"
-                     ; "max-w-prose"
-                     ; "m-auto"
-                     ]
-                 ; a_style "overflow: auto"
+                 [ a_style
+                     {|
+                        overflow: auto;
+                        max-width:800px;
+                        margin:auto;
+                        display:block;
+                     |}
                  ]
                [ Unsafe.data itm.desc ]
            ]))

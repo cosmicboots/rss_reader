@@ -10,24 +10,14 @@ let sidebar req =
   Lwt.return
     Html.(
       div
-        ~a:
-          [ a_class [ "bg-slate-200"; "dark:bg-slate-800"; "overflow-scroll" ]
-          ]
-        [ h1 ~a:[ a_class [ "px-4" ] ] [ txt "Article List" ]; posts ])
+        ~a:[ Unsafe.string_attrib "slot" "start"; a_style "overflow: scroll" ]
+        [ h1 [ txt "Article List" ]; posts ])
 ;;
 
 let content () =
   Html.(
     div
-      ~a:
-        [ a_class
-            [ "col-start-2"
-            ; "bg-slate-200"
-            ; "dark:bg-slate-800"
-            ; "p-4"
-            ; "overflow-scroll"
-            ]
-        ]
+      ~a:[ Unsafe.string_attrib "slot" "end" ]
       [ div
           ~a:[ a_id "article-content" ]
           [ p [ em [ txt "Choose an article on the left" ] ] ]
@@ -39,11 +29,8 @@ let page req =
   let* sidebar = sidebar req in
   Lwt.return
     Html.(
-      div
-        ~a:
-          [ a_class [ "grid" ]
-          ; a_style "overflow: auto; grid-template-columns: 300px auto;"
-          ]
+      Sl.split_panel
+        ~a:[ Unsafe.string_attrib "position" "25"; a_style "height: 100%;" ]
         [ sidebar; content () ])
 ;;
 

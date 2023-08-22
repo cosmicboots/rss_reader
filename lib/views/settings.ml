@@ -8,11 +8,7 @@ let feed_manager req =
   Lwt.return_ok
     Html.(
       table
-        ~a:
-          [ a_class [ "border"; "dark:border-slate-700" ]
-          ; Hx.target (`Closest "tr")
-          ; Hx.swap `OuterHTML
-          ]
+        ~a:[ Hx.target (`Closest "tr"); Hx.swap `OuterHTML ]
         ~thead:
           (thead
              [ tr
@@ -36,40 +32,17 @@ let new_feed req =
       ; div ~a:[ a_id "form-msg" ] []
       ; label ~a:[ a_label_for "name" ] [ txt "Name" ]
       ; br ()
-      ; input
-          ~a:
-            [ a_class @@ Snippets.Style.input_style ()
-            ; a_name "name"
-            ; a_placeholder "Name"
-            ]
-          ()
+      ; input ~a:[ a_name "name"; a_placeholder "Name" ] ()
       ; br ()
       ; label ~a:[ a_label_for "desc" ] [ txt "Description" ]
       ; br ()
-      ; input
-          ~a:
-            [ a_class @@ Snippets.Style.input_style ()
-            ; a_name "desc"
-            ; a_placeholder "Description"
-            ]
-          ()
+      ; input ~a:[ a_name "desc"; a_placeholder "Description" ] ()
       ; br ()
       ; label ~a:[ a_label_for "uri" ] [ txt "URI" ]
       ; br ()
-      ; input
-          ~a:
-            [ a_class @@ Snippets.Style.input_style ()
-            ; a_name "uri"
-            ; a_placeholder "URI"
-            ]
-          ()
+      ; input ~a:[ a_name "uri"; a_placeholder "URI" ] ()
       ; br ()
-      ; button
-          ~a:
-            [ a_button_type `Submit
-            ; a_class @@ Snippets.Style.button_style ()
-            ]
-          [ txt "Add Feed" ]
+      ; button ~a:[ a_button_type `Submit ] [ txt "Add Feed" ]
       ])
 ;;
 
@@ -81,7 +54,6 @@ let get req =
   @@ Lwt.return
        Html.(
          div
-           ~a:[ a_class [ "max-w-screen-md"; "mx-auto"; "px-8" ] ]
            [ h2 [ txt "Current Feeds" ]
            ; feeds
            ; h2 [ txt "Add a Feed" ]

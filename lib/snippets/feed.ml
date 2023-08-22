@@ -9,15 +9,11 @@ let feed_elt (feed : Models.Channel.t) =
       ; td [ txt feed.uri ]
       ; td
           [ button
-              ~a:
-                [ a_class @@ Style.button_style ()
-                ; Hx.get @@ sprintf "/api/feeds/%d/edit" feed.id
-                ]
+              ~a:[ Hx.get @@ sprintf "/api/feeds/%d/edit" feed.id ]
               [ txt "Edit" ]
           ; button
               ~a:
-                [ a_class @@ Style.button_style ()
-                ; Hx.confirm "Are you sure you want to delete?"
+                [ Hx.confirm "Are you sure you want to delete?"
                 ; Hx.delete @@ sprintf "/api/feeds/%d" feed.id
                 ]
               [ txt "Delete" ]
@@ -28,45 +24,17 @@ let feed_elt (feed : Models.Channel.t) =
 let feed_edit_elt (feed : Models.Channel.t) req =
   Html.(
     tr
-      [ td
-          [ input
-              ~a:
-                [ a_class @@ Style.input_style ()
-                ; a_name "name"
-                ; a_value feed.name
-                ]
-              ()
-          ]
-      ; td
-          [ input
-              ~a:
-                [ a_class @@ Style.input_style ()
-                ; a_name "desc"
-                ; a_value feed.desc
-                ]
-              ()
-          ]
-      ; td
-          [ input
-              ~a:
-                [ a_class @@ Style.input_style ()
-                ; a_name "uri"
-                ; a_value feed.uri
-                ]
-              ()
-          ]
+      [ td [ input ~a:[ a_name "name"; a_value feed.name ] () ]
+      ; td [ input ~a:[ a_name "desc"; a_value feed.desc ] () ]
+      ; td [ input ~a:[ a_name "uri"; a_value feed.uri ] () ]
       ; td
           [ Dream.csrf_tag req |> Unsafe.data
           ; button
-              ~a:
-                [ a_class @@ Style.button_style ()
-                ; Hx.get @@ sprintf "/api/feeds/%d" feed.id
-                ]
+              ~a:[ Hx.get @@ sprintf "/api/feeds/%d" feed.id ]
               [ txt "Cancel" ]
           ; button
               ~a:
-                [ a_class @@ Style.button_style ()
-                ; Hx.include_ (`Closest "tr")
+                [ Hx.include_ (`Closest "tr")
                 ; Hx.put @@ sprintf "/api/feeds/%d" feed.id
                 ]
               [ txt "Save" ]
@@ -113,13 +81,7 @@ let post req =
       Dream.sql req @@ Models.Channel.insert_channel ~name ~desc ~uri
     in
     let* () = Caqti_lwt.or_fail res in
-    Lwt.return
-    @@ Html.(
-         span
-           ~a:
-             [ a_class [ "p-2"; "rounded-lg"; "bg-sky-700"; "text-slate-200" ]
-             ]
-           [ txt "Success!" ])
+    Lwt.return @@ Html.(span [ txt "Success!" ])
   | _ -> Lwt.return @@ Html.(span [ txt "ERROR" ])
 ;;
 
