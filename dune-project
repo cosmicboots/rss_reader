@@ -11,6 +11,8 @@
 
 (maintainers "Thom Dickson <td3of4@gmail.com>")
 
+(using menhir 2.1)
+
 (package
  (name rss_reader)
  (synopsis "RSS reader")
