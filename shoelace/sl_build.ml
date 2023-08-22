@@ -76,10 +76,18 @@ let gen_attribute (attribute : attribute) =
         "let %s x = Tyxml.Html.Unsafe.space_sep_attrib \"%s\" x"
         name
         attribute.name
-    | String _ -> ""
-    | Const _ -> ""
-    | Union _ -> ""
-    | Function (_, _) -> ""
+    | String _ ->
+      eprintf "WARN: String type not implemented yet\n";
+      ""
+    | Const _ ->
+      eprintf "WARN: Const type not implemented yet\n";
+      ""
+    | Union _ ->
+      eprintf "WARN: Union type not implemented yet\n";
+      ""
+    | Function (_, _) ->
+      eprintf "WARN: Function type not implemented yet\n";
+      ""
     | Empty -> ""
   in
   match attribute.description, line with
