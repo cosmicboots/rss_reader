@@ -3,4 +3,3 @@ let parse (s : string) : Value_type.value_type =
   let ast = Parser.type_ Lexer.read lexbuf in
   ast
 ;;
-

@@ -1,5 +1,8 @@
 (library
- (name typep))
+ (name value_parser)
+ (libraries ppx_deriving)
+ (preprocess
+  (pps ppx_deriving.show)))
 
 (menhir
  (modules parser))

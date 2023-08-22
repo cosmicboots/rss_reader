@@ -2,28 +2,51 @@
 open Value_type
 %}
 
-%token BOOLEAN
-%token NUMBER
-%token STRING
-%token EOF
-%token UNION
-%token QUOTE
+%token BOOLEANLIT
+%token NUMBERLIT
+%token STRINGLIT
+%token <string> STRING
+%token PIPE
 %token UNDEFINED
+%token LBRACKET
+%token RBRACKET
+%token EOF
+%token LPAREN
+%token RPAREN
+%token ARROW
+%token COLON
 %token <string> ID
 
 %start <Value_type.value_type> type_
 
 %%
 
-array_fields:
+value:
+    | l = ID { Const l }
+    | s = STRING { String s }
+    | NUMBERLIT { NumberT }
+    | STRINGLIT { StringT }
+    | BOOLEANLIT { BooleanT }
+    | UNDEFINED { Const "undefined" }
+    | v = value; LBRACKET; RBRACKET { List v }
+    | LPAREN; ID; COLON; i = value; RPAREN; ARROW; o = value { Function (i, o) }
+
+array_fields_end:
     | { [] }
-    | QUOTE; l = ID; QUOTE; UNION; lst = array_fields { l :: lst }
-    | QUOTE; l = ID; QUOTE; EOF; lst = array_fields { l :: lst }
-    | UNDEFINED; EOF; lst = array_fields { "undefined" :: lst }
+    | v = value; PIPE; lst = array_fields_end { v :: lst }
+    | v = value; EOF; lst = array_fields_end { v :: lst }
+
+array_fields:
+    | v = value; PIPE; lst = array_fields_end { v :: lst }
+
+type_end:
+    | BOOLEANLIT; EOF { BooleanT }
+    | NUMBERLIT; EOF { NumberT }
+    | STRINGLIT; EOF { StringT }
+    | x = array_fields; EOF { Union x }
+    | v = value; EOF { v }
+    ;
 
 type_:
-    | BOOLEAN; EOF { Boolean }
-    | NUMBER; EOF { Number }
-    | STRING; EOF { String }
-    | x = array_fields; EOF { Const x }
-    ;
+    | PIPE; t = type_end { t }
+    | t = type_end { t }
