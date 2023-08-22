@@ -52,34 +52,41 @@ let gen_attribute (attribute : attribute) =
   let name = safe_name @@ Camelsnakekebab.lower_snake_case attribute.name in
   let open Option in
   let open Value_parser.Value_type in
-  attribute.value.type_
-  >>| Value_parser.Main.parse
-  >>| function
-  | BooleanT ->
-    sprintf
-      "let %s () = Tyxml.Html.Unsafe.string_attrib \"%s\" \"\""
-      name
-      attribute.name
-  | NumberT ->
-    sprintf
-      "let %s x = Tyxml.Html.Unsafe.int_attrib \"%s\" x"
-      name
-      attribute.name
-  | StringT ->
-    sprintf
-      "let %s x = Tyxml.Html.Unsafe.string_attrib \"%s\" x"
-      name
-      attribute.name
-  | List _ ->
-    sprintf
-      "let %s x = Tyxml.Html.Unsafe.space_sep_attrib \"%s\" x"
-      name
-      attribute.name
-  | String _ -> ""
-  | Const _ -> ""
-  | Union _ -> ""
-  | Function (_, _) -> ""
-  | Empty -> ""
+  let line =
+    attribute.value.type_
+    >>| Value_parser.Main.parse
+    >>| function
+    | BooleanT ->
+      sprintf
+        "let %s () = Tyxml.Html.Unsafe.string_attrib \"%s\" \"\""
+        name
+        attribute.name
+    | NumberT ->
+      sprintf
+        "let %s x = Tyxml.Html.Unsafe.int_attrib \"%s\" x"
+        name
+        attribute.name
+    | StringT ->
+      sprintf
+        "let %s x = Tyxml.Html.Unsafe.string_attrib \"%s\" x"
+        name
+        attribute.name
+    | List _ ->
+      sprintf
+        "let %s x = Tyxml.Html.Unsafe.space_sep_attrib \"%s\" x"
+        name
+        attribute.name
+    | String _ -> ""
+    | Const _ -> ""
+    | Union _ -> ""
+    | Function (_, _) -> ""
+    | Empty -> ""
+  in
+  match attribute.description, line with
+  | Some desc, Some l when String.length l > 1 ->
+    Some (sprintf "(** %s *)\n" desc ^ l)
+  | None, Some l -> Some l
+  | _ -> None
 ;;
 
 let gen_module (element : element) =
@@ -114,18 +121,18 @@ let elt_of_element (element : element) =
   let module_ = gen_module element in
   sprintf
     {|
+%s
 (** [%s children] will create a Shoelace component with [children] as children elements
 Docs: %s
 Attributes: %s *)
 let %s ?a children = Tyxml.Html.Unsafe.node "%s" ?a children
-%s
 |}
+    module_
     name
     element.docs
     (String.concat ~sep:" " @@ List.map ~f:(fun x -> x.name) element.attributes)
     name
     element.name
-    module_
 ;;
 
 let () =
