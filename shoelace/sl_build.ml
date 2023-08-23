@@ -83,12 +83,6 @@ let gen_attribute (attribute : attribute) =
         "let %s x = Tyxml.Html.Unsafe.space_sep_attrib \"%s\" x"
         name
         attribute.name
-    | String _ ->
-      eprintf "WARN: String type not implemented yet\n";
-      ""
-    | Const _ ->
-      eprintf "WARN: Const type not implemented yet\n";
-      ""
     | Union lst ->
       let variants =
         List.filter_map
@@ -110,7 +104,17 @@ let gen_attribute (attribute : attribute) =
           (String.concat ~sep:" | " variants))
       else ""
     | Function (_, _) ->
-      eprintf "WARN: Function type not implemented yet\n";
+      (* TODO: This API should be improved. Need to have a way to declare what
+         kind of js function is used *)
+      sprintf
+        "let %s x = Tyxml.Html.Unsafe.string_attrib \"%s\" x"
+        name
+        attribute.name
+    | String _ ->
+      eprintf "WARN: String type not implemented yet\n";
+      ""
+    | Const c ->
+      eprintf "WARN: Const type not implemented yet: (%s)\n" c;
       ""
     | Empty -> ""
   in
