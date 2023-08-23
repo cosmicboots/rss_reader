@@ -23,7 +23,4 @@
  (target sl.ml)
  (mode promote)
  (action
-  (run
-   sh
-   -c
-   "sl_build %{target} %{deps} && ocamlformat --inplace %{target}")))
+  (run sh -c "sl_build %{target} %{deps} && ocamlformat --inplace %{target}")))
