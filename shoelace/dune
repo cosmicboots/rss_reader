@@ -21,6 +21,7 @@
 (rule
  (deps web-types.json sl_build.exe)
  (target sl.ml)
- (mode promote)
+ (mode
+  (promote (until-clean)))
  (action
   (run sh -c "sl_build %{target} %{deps} && ocamlformat --inplace %{target}")))
