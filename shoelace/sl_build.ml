@@ -43,9 +43,16 @@ let read_file ic =
 
 let safe_name name =
   let reserved_words =
-    Str.regexp (String.concat ~sep:{|\||} [ "include"; "open"; "lazy" ])
+    Str.regexp
+      (String.concat ~sep:{|\||} [ "include"; "open"; "lazy"; "type" ])
   in
   Str.global_replace reserved_words {|\0_|} name
+;;
+
+let safe_variant name =
+  Camelsnakekebab.upper_camel_case name
+  |> String.substr_replace_all ~pattern:"/" ~with_:"_"
+  |> Str.global_replace (Str.regexp {|^[0-9]|}) {|X\0|}
 ;;
 
 let gen_attribute (attribute : attribute) =
@@ -82,9 +89,26 @@ let gen_attribute (attribute : attribute) =
     | Const _ ->
       eprintf "WARN: Const type not implemented yet\n";
       ""
-    | Union _ ->
-      eprintf "WARN: Union type not implemented yet\n";
-      ""
+    | Union lst ->
+      let variants =
+        List.filter_map
+          ~f:(function
+            | String s -> Some (sprintf "`%s -> \"%s\"\n" (safe_variant s) s)
+            | StringT -> Some {|`String s -> s |}
+            | _ -> None)
+          lst
+      in
+      if List.length variants > 0
+      then (
+        let fun_name = Camelsnakekebab.lower_snake_case attribute.name in
+        sprintf
+          {|let %s x = Tyxml.Html.Unsafe.string_attrib "%s" @@ (function
+                | %s) x
+           |}
+          (safe_name fun_name)
+          attribute.name
+          (String.concat ~sep:" | " variants))
+      else ""
     | Function (_, _) ->
       eprintf "WARN: Function type not implemented yet\n";
       ""
@@ -92,7 +116,7 @@ let gen_attribute (attribute : attribute) =
   in
   match attribute.description, line with
   | Some desc, Some l when String.length l > 1 ->
-    Some (sprintf "(** %s *)\n" desc ^ l)
+    Some (sprintf "\n(** %s *)\n" desc ^ l)
   | None, Some l -> Some l
   | _ -> None
 ;;
@@ -116,6 +140,7 @@ let gen_module (element : element) =
   if String.length attributes_str > 0
   then sprintf {|
 module %s = struct
+
     %s
 end
 |} name attributes_str
