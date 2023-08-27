@@ -28,28 +28,29 @@ let get req =
   let* itm = Dream.sql req @@ Models.Post.get_post ~id in
   let* itm = Caqti_lwt.or_fail itm in
   let cat_items =
-    List.map ~f:(fun cat -> Html.(li [ txt cat ])) itm.categories
+    List.map ~f:(fun cat -> Html.(Sl.badge [ txt cat ])) itm.categories
   in
   Lwt.return
     Html.(
-      div
-        ([ h1 [ txt itm.title ]
-         ; a ~a:[ a_href itm.guid; a_target "_blank" ] [ txt itm.guid ]
-         ; br ()
-         ]
-         @ (if List.length cat_items > 0
-            then [ span [ txt "Categories:" ]; ul cat_items ]
-            else [])
-         @ [ Sl.card
-               ~a:
-                 [ a_style
-                     {|
+      Sl.card
+        ~a:
+          [ a_style
+              {|
                         overflow: auto;
                         max-width:800px;
                         margin:auto;
                         display:block;
                      |}
-                 ]
-               [ Unsafe.data itm.desc ]
-           ]))
+          ]
+        [ div
+            ~a:[ Unsafe.string_attrib "slot" "header" ]
+            (a
+               ~a:[ a_href itm.guid; a_target "_blank" ]
+               [ h1 [ txt itm.title ] ]
+             ::
+             (if List.length cat_items > 0
+              then span [ txt "Categories: " ] :: cat_items
+              else []))
+        ; div [ Unsafe.data itm.desc ]
+        ])
 ;;
