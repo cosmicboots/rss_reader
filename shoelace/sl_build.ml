@@ -180,6 +180,18 @@ let () =
   let oc = Stdlib.open_out output_file in
   let content = read_file ic in
   let json = schema_of_yojson @@ Yojson.Safe.from_string content in
+  Stdlib.output_string
+    oc
+    {|
+module Util = struct
+    (** Utilities that don't otherwise fit into a specific component *)
+
+    (** [slot slot_name] will create an attribute that places a component into slot [slot_name]
+
+        Docs: https://shoelace.style/getting-started/usage#slots*)
+    let slot slot_name = Tyxml.Html.Unsafe.string_attrib "slot" slot_name;;
+end
+|};
   (match json with
    | Ok json ->
      let _ = show_schema json in

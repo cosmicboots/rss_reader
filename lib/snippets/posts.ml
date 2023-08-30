@@ -28,7 +28,9 @@ let get req =
   let* itm = Dream.sql req @@ Models.Post.get_post ~id in
   let* itm = Caqti_lwt.or_fail itm in
   let cat_items =
-    List.map ~f:(fun cat -> Html.(Sl.badge [ txt cat ])) itm.categories
+    List.map
+      ~f:(fun cat -> Html.(Sl.badge ~a:[ Sl.Badge.pill () ] [ txt cat ]))
+      itm.categories
   in
   Lwt.return
     Html.(
@@ -43,7 +45,7 @@ let get req =
                      |}
           ]
         [ div
-            ~a:[ Unsafe.string_attrib "slot" "header" ]
+            ~a:[ Sl.Util.slot "header" ]
             (a
                ~a:[ a_href itm.guid; a_target "_blank" ]
                [ h1 [ txt itm.title ] ]
