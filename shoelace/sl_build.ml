@@ -44,7 +44,10 @@ let read_file ic =
 let safe_name name =
   let reserved_words =
     Str.regexp
-      (String.concat ~sep:{|\||} [ "include"; "open"; "lazy"; "type" ])
+      (String.concat ~sep:{|\||}
+       @@ List.map
+            ~f:(fun x -> "^" ^ x ^ "$")
+            [ "include"; "open"; "lazy"; "type" ])
   in
   Str.global_replace reserved_words {|\0_|} name
 ;;
