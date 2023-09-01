@@ -89,6 +89,9 @@ let gen_attribute (attribute : attribute) =
           ~f:(function
             | String s -> Some (sprintf "`%s -> \"%s\"\n" (safe_variant s) s)
             | StringT -> Some {|`String s -> s |}
+            | Const s -> Some (sprintf "`%s -> \"%s\"\n" (safe_variant s) s)
+            | NumberT -> Some {|`Number x -> string_of_int x|}
+            | List StringT -> Some {|`StringList lst -> String.concat " " lst|}
             | _ -> None)
           lst
       in
