@@ -11,6 +11,9 @@ module ParseError = struct
   ;;
 end
 
+(** [get_feed ~id db] will issue a Cohttp request to fetch a feed with an id of [id]
+
+    [db] is the database connection *)
 let get_feed ~id db =
   let open Lwt_result.Syntax in
   let* chan = Models.Channel.get_channel ~id db in
@@ -20,6 +23,7 @@ let get_feed ~id db =
   Lwt.return_ok body
 ;;
 
+(** [translate_chan ~chan_id chan] *)
 let translate_chan ~chan_id chan =
   let parse txt =
     let chan, errors = Rss_io.channel_of_string (Rss_io.make_opts ()) txt in
@@ -66,6 +70,19 @@ let run ?chan_id db =
       let* feed_body = get_feed ~id:chan_id db in
       let* feed_body = Caqti_lwt.or_fail feed_body in
       let raw_items = translate_chan ~chan_id feed_body in
-      Lwt_list.iter_s (fun x -> load_chan db x >>= Caqti_lwt.or_fail) raw_items)
+      Lwt_list.iter_s
+        (fun x ->
+          load_chan db x
+          >|= (function
+                | Ok () -> Ok ()
+                | Error (`Response_failed m as e) ->
+                  let msg = Format.asprintf "%a\n" Caqti_error.pp_msg m.msg in
+                  (* Ignore unique constraint failures. *)
+                  if String.is_prefix ~prefix:"UNIQUE constraint failed" msg
+                  then Ok ()
+                  else Error e
+                | Error e -> Error e)
+          >>= Caqti_lwt.or_fail)
+        raw_items)
     chan_ids
 ;;
