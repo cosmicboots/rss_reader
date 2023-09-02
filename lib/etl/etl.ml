@@ -43,6 +43,7 @@ let translate_chan ~chan_id chan =
              >>| function
              | Rss_types.Guid_name x -> x
              | Rss_types.Guid_permalink x -> Uri.to_string x)
+        , Option.value ~default:Ptime.epoch itm.item_pubdate
         , chan_id
         , Option.value ~default:"" itm.item_desc
         , List.map ~f:(fun x -> x.cat_name) itm.item_categories ))
@@ -50,8 +51,8 @@ let translate_chan ~chan_id chan =
   | Error e -> failwith @@ ParseError.show e
 ;;
 
-let load_chan db (title, guid, channel_id, desc, categories) =
-  Models.Post.insert_post ~title ~guid ~channel_id ~desc ~categories db
+let load_chan db (title, guid, date, channel_id, desc, categories) =
+  Models.Post.insert_post ~title ~guid ~date ~channel_id ~desc ~categories db
 ;;
 
 let run ?chan_id db =

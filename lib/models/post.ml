@@ -8,6 +8,7 @@ open Petrol.Sqlite3
 type t =
   { id : int
   ; guid : string
+  ; date : Ptime.t
   ; channel_id : int
   ; title : string
   ; desc : string
@@ -15,18 +16,25 @@ type t =
   }
 [@@deriving show]
 
-let t_of_tuple (id, (guid, (channel_id, (title, (desc, (categories, ())))))) =
+let t_of_tuple
+  (id, (guid, (date, (channel_id, (title, (desc, (categories, ())))))))
+  =
   { id
   ; guid
+  ; date = Option.value_exn @@ Ptime.of_float_s date
   ; channel_id
   ; title
   ; desc
-  ; categories = String.split ~on:',' categories
+  ; categories =
+      (if String.(categories <> "")
+       then String.split ~on:',' categories
+       else [])
   }
 ;;
 
 let ( post_table
-    , (Expr.[ id; guid; channel_id; title; desc; categories ] as all_fields) )
+    , (Expr.[ id; guid; date; channel_id; title; desc; categories ] as
+       all_fields) )
   =
   StaticSchema.declare_table
     schema
@@ -37,6 +45,7 @@ let ( post_table
           "id"
           ~ty:Type.int
       ; field ~constraints:[ unique (); not_null () ] "guid" ~ty:Type.text
+      ; field ~constraints:[ not_null () ] "date" ~ty:Type.real
       ; field
           ~constraints:
             [ foreign_key
@@ -56,6 +65,7 @@ let ( post_table
 let insert_post
   ~title:title_
   ~guid:guid_
+  ~date:date_
   ~channel_id:channel_id_
   ~desc:desc_
   ~categories:categories_
@@ -67,14 +77,10 @@ let insert_post
       Expr.
         [ title := s title_
         ; guid := s guid_
+        ; date := f @@ Ptime.to_float_s date_
         ; channel_id := i channel_id_
         ; desc := s desc_
-        ; categories
-            := s
-               @@ List.fold
-                    ~f:(fun acc x -> acc ^ "," ^ x)
-                    ~init:(Option.value ~default:"" (List.hd categories_))
-                    (Option.value ~default:[] (List.tl categories_))
+        ; categories := s @@ String.concat ~sep:"," categories_
         ]
   |> Request.make_zero
   |> Petrol.exec db
