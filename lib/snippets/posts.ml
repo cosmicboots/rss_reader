@@ -57,6 +57,19 @@ let get req =
             (a
                ~a:[ a_href itm.guid; a_target "_blank" ]
                [ h1 [ txt itm.title ] ]
+             :: p
+                  [ (let (year, month, day), ((hour, minute, _second), _tz) =
+                       Ptime.to_date_time itm.date
+                     in
+                     txt
+                     @@ sprintf
+                          "%04d-%02d-%02d\n%02d:%02d"
+                          year
+                          month
+                          day
+                          hour
+                          minute)
+                  ]
              ::
              (if List.length cat_items > 0
               then span [ txt "Categories: " ] :: cat_items

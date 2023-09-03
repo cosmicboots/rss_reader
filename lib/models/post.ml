@@ -97,6 +97,7 @@ let get_posts db =
        ~op:Query.LEFT
        ~on:Expr.(channel_id = chan_id_ref)
        (Query.select [ chan_id; chan_name ] ~from:Channel.channel_table)
+  |> Query.order_by ~direction:`DESC date
   |> Request.make_many
   |> Petrol.collect_list db
   >|= List.map ~f:(fun (chan_name, x) -> chan_name, t_of_tuple x)
