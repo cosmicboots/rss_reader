@@ -12,7 +12,7 @@ let list req =
   Dream.log "Pulled %d items from the db" @@ List.length itms;
   Lwt.return
     Html.(
-      Sl.tree
+      Sl.tree ~a:[ a_style "--indent-guide-width: 2px" ]
       @@ List.map
            ~f:(fun (chan, itms) ->
              Sl.tree_item

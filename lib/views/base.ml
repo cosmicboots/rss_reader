@@ -13,6 +13,11 @@ let scripts () =
     ; link
         ~rel:[ `Stylesheet ]
         ~href:
+          "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/light.css"
+        ()
+    ; link
+        ~rel:[ `Stylesheet ]
+        ~href:
           "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.7.0/cdn/themes/dark.css"
         ()
     ; script
