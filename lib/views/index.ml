@@ -10,8 +10,22 @@ let sidebar req =
   Lwt.return
     Html.(
       div
-        ~a:[ Sl.Util.slot "start"; a_style "overflow: auto" ]
-        [ h1 [ txt "Article List" ]; posts ])
+        ~a:[ Sl.Util.slot "start"; a_style "overflow: auto; padding: 1rem;" ]
+        [ h1 [ txt "Article List" ]
+        ; Sl.button
+          (* TODO: This refresh button should run the etl batch to refresh the feeds *)
+            ~a:[ Hx.get "/api/posts"; Hx.target (`Css "#post-list") ]
+            [ Sl.icon
+                ~a:
+                  [ Sl.Util.slot "prefix"
+                  ; Sl.IconButton.name (`String "arrow-clockwise")
+                  ]
+                []
+            ; txt "Refresh"
+            ]
+        ; Sl.divider []
+        ; div ~a:[ a_id "post-list" ] [ posts ]
+        ])
 ;;
 
 let content () =
@@ -19,7 +33,7 @@ let content () =
     div
       ~a:[ Sl.Util.slot "end"; a_style "overflow: auto;" ]
       [ div
-          ~a:[ a_id "article-content" ]
+          ~a:[ a_id "article-content"; a_style "padding: 1rem;" ]
           [ p [ em [ txt "Choose an article on the left" ] ] ]
       ])
 ;;
@@ -38,4 +52,4 @@ let page req =
 ;;
 
 (** The get endpoint for the index page *)
-let get req = setup_page ~title:"RSS Reader" @@ page req
+let get req = setup_page ~title:"RSS Reader" req @@ page req

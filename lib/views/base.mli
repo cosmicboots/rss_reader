@@ -2,5 +2,6 @@
     title and [elt] as main page content *)
 val setup_page
   :  title:string
+  -> Dream.request
   -> [< Html_types.flow5 > `Div ] Tyxml_html.elt Lwt.t
   -> Dream.response Lwt.t

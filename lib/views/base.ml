@@ -30,32 +30,47 @@ let scripts () =
     ]
 ;;
 
-let toolbar () =
+let toolbar darkmode =
   Html.(
     div (* Toolbar div *)
-      ~a:[]
-      [ Sl.button
-          ~a:[ Unsafe.string_attrib "variant" "text"; a_href "/" ]
-          [ txt "RSS Reader" ]
-      ; Sl.button
-          ~a:[ Unsafe.string_attrib "variant" "text"; a_href "/settings" ]
-          [ txt "Settings" ]
+      ~a:[ a_style "display: flex;" ]
+      [ div
+          ~a:[ a_style "flex: 1 1 0;" ]
+          [ Sl.button
+              ~a:[ Sl.Button.variant `Text; a_href "/" ]
+              [ txt "RSS Reader" ]
+          ; Sl.button
+              ~a:[ Sl.Button.variant `Text; a_href "/settings" ]
+              [ txt "Settings" ]
+          ]
+      ; div
+          ~a:[ a_style "flex: 0 1 0;" ]
+          [ Snippets.Darkmode.dark_indicator darkmode ]
       ])
 ;;
 
-let setup_page ~title:title_ body =
+let setup_page ~title:title_ req body =
   let open Lwt.Syntax in
   let* body_ = body in
+  let darkmode =
+    match Dream.session_field req "ui.darkmode" with
+    | Some "false" -> false
+    | _ -> true
+  in
   Dream.html
   @@ elt_to_string
   @@ Html.(
        html
-         ~a:[ a_class [ "sl-theme-dark" ]; a_style "height:100%" ]
+         ~a:
+           [ a_class
+               [ (if darkmode then "sl-theme-dark" else "sl-theme-light") ]
+           ; a_style "height:100%"
+           ]
          (head (title @@ txt title_) @@ scripts ())
          (body
             ~a:
               [ a_style
                   "height: 100%; margin: 0; display: flex; flex-flow: column;"
               ]
-            [ toolbar (); body_ ]))
+            [ toolbar darkmode; body_ ]))
 ;;

@@ -50,7 +50,7 @@ let get req =
   let open Lwt.Syntax in
   let* feeds = feed_manager req in
   let* feeds = Caqti_lwt.or_fail feeds in
-  setup_page ~title:"Settings"
+  setup_page ~title:"Settings" req
   @@ Lwt.return
        Html.(
          div
