@@ -52,5 +52,10 @@ let setup_page ~title:title_ body =
        html
          ~a:[ a_class [ "sl-theme-dark" ]; a_style "height:100%" ]
          (head (title @@ txt title_) @@ scripts ())
-         (body ~a:[ a_style "height: 100%;" ] [ toolbar (); body_ ]))
+         (body
+            ~a:
+              [ a_style
+                  "height: 100%; margin: 0; display: flex; flex-flow: column;"
+              ]
+            [ toolbar (); body_ ]))
 ;;

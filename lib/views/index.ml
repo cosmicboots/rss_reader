@@ -10,14 +10,14 @@ let sidebar req =
   Lwt.return
     Html.(
       div
-        ~a:[ Unsafe.string_attrib "slot" "start"; a_style "overflow: scroll" ]
+        ~a:[ Sl.Util.slot "start"; a_style "overflow: auto" ]
         [ h1 [ txt "Article List" ]; posts ])
 ;;
 
 let content () =
   Html.(
     div
-      ~a:[ Unsafe.string_attrib "slot" "end" ]
+      ~a:[ Sl.Util.slot "end"; a_style "overflow: auto;" ]
       [ div
           ~a:[ a_id "article-content" ]
           [ p [ em [ txt "Choose an article on the left" ] ] ]
@@ -30,7 +30,10 @@ let page req =
   Lwt.return
     Html.(
       Sl.split_panel
-        ~a:[ Unsafe.string_attrib "position" "25"; a_style "height: 100%;" ]
+        ~a:
+          [ Sl.SplitPanel.position 25
+          ; a_style "flex: 1 1 1px; overflow: auto;"
+          ]
         [ sidebar; content () ])
 ;;
 
