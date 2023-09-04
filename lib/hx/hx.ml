@@ -66,3 +66,5 @@ let trigger ?(once = false) ?(changed = false) ?delay ?throttle event =
   @@ TriggerEvent.to_string event
   ^ !args
 ;;
+
+let boost x = Html.Unsafe.string_attrib "hx-boost" @@ string_of_bool x
