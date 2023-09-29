@@ -1,3 +1,0 @@
-(library
- (name rss_reader)
- (libraries views dream dream-livereload))

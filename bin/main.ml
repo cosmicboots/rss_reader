@@ -1,5 +1,4 @@
 open Core
-open Rss_reader
 open Cmdliner
 
 let sql_uri = "sqlite3:db.sqlite"
