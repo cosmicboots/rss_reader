@@ -18,6 +18,11 @@ depends: [
   "caqti-driver-sqlite3"
   "ppx_deriving"
   "tyxml"
+  "rss"
+  "petrol"
+  "camelsnakekebab"
+  "cohttp-lwt-unix"
+  "petrol"
   "odoc" {with-doc}
 ]
 build: [

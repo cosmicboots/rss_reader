@@ -13,12 +13,13 @@ let unit_api_handler snip req =
 ;;
 
 let api_routes : Dream.route list =
-  [ Dream.get "/posts" @@ api_handler Snippets.Posts.list
-  ; (Dream.get "/posts"
+  [ (Dream.get "/posts"
      @@ fun req ->
      let open Lwt.Syntax in
-     let* res = Snippets.Posts.list req in
+     Dream.log "Running etl";
      let* () = Dream.sql req Etl.run in
+     Dream.log "Ran etl";
+     let* res = Snippets.Posts.list req in
      Dream.html @@ elt_to_string res)
   ; Dream.get "/posts/:post_id" @@ api_handler Snippets.Posts.get
   ; Dream.get "/feeds/:feed_id" @@ api_handler Snippets.Feed.get

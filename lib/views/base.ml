@@ -66,7 +66,9 @@ let setup_page ~title:title_ req body =
                [ (if darkmode then "sl-theme-dark" else "sl-theme-light") ]
            ; a_style "height:100%"
            ]
-         (head (title @@ txt title_) @@ scripts ())
+         (head (title @@ txt title_)
+          @@ [ meta ~a:[ a_content "width=device-width, initial-scale=1" ] () ]
+          @ scripts ())
          (body
             ~a:
               [ a_style

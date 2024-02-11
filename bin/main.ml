@@ -3,8 +3,8 @@ open Cmdliner
 
 let sql_uri = "sqlite3:db.sqlite"
 
-let start_dream port =
-  Dream.run ~port
+let start_dream port interface =
+  Dream.run ~port ~interface
   @@ Dream.logger
   @@ Dream.sql_pool sql_uri
   @@ Dream.memory_sessions
@@ -33,8 +33,17 @@ let ws_cmd =
       & opt int 8080
       & info [ "p"; "port" ] ~doc:"Port to bind the server to" ~docv:"PORT")
   in
+  let host =
+    Arg.(
+      value
+      & opt string "localhost"
+      & info
+          [ "i"; "interface" ]
+          ~doc:"Interface to bind the server to"
+          ~docv:"INTERFACE")
+  in
   Cmd.v (Cmd.info "web-server" ~doc:"Start the web server")
-  @@ Term.(const start_dream $ port)
+  @@ Term.(const start_dream $ port $ host)
 ;;
 
 let etl_cmd =
