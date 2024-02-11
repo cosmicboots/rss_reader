@@ -1,6 +1,15 @@
 (executable
  (public_name rss_reader)
  (name main)
- (libraries core dream caqti-dynload dream-livereload cmdliner etl router)
+ (libraries
+  core
+  dream
+  caqti-dynload
+  dream-livereload
+  cmdliner
+  etl
+  router
+  argon2
+  auth)
  (preprocess
   (pps ppx_deriving.show)))
