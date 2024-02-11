@@ -1,0 +1,3 @@
+(library
+ (name auth)
+ (libraries argon2 dream))

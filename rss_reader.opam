@@ -25,6 +25,7 @@ depends: [
   "petrol"
   "ppx_deriving_yojson"
   "ocamlformat"
+  "argon2"
   "odoc" {with-doc}
 ]
 build: [
