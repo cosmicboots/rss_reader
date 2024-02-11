@@ -8,6 +8,7 @@ let start_dream port interface =
   @@ Dream.logger
   @@ Dream.sql_pool sql_uri
   @@ Dream.memory_sessions
+  @@ Dream.flash
   (*@@ Dream_livereload.inject_script ()*)
   @@ Dream.router Router.routes
 ;;
@@ -88,8 +89,8 @@ let create_user username =
   | Error (`Post_connect _) -> printf "`Post_connect\n"
   | Error (`Request_failed _) -> printf "`Request_failed\n"
   | Error (`Request_rejected _) -> printf "`Request_rejected\n"
-  | Error ((`Response_failed _) as er) ->
-    printf "Response_failed: %s\n" @@ Caqti_error.show er;
+  | Error (`Response_failed _ as er) ->
+    printf "Response_failed: %s\n" @@ Caqti_error.show er
   | Error (`Response_rejected _) -> printf "`Response_rejected\n"
 ;;
 

@@ -57,6 +57,9 @@ let setup_page ~title:title_ req body =
     | Some "false" -> false
     | _ -> true
   in
+  let msgs =
+    List.map (Dream.flash_messages req) ~f:(fun (_k, v) -> Html.(p [ txt v ]))
+  in
   Dream.html
   @@ elt_to_string
   @@ Html.(
@@ -74,5 +77,5 @@ let setup_page ~title:title_ req body =
               [ a_style
                   "height: 100%; margin: 0; display: flex; flex-flow: column;"
               ]
-            [ toolbar darkmode; body_ ]))
+            [ toolbar darkmode; div msgs; body_ ]))
 ;;
