@@ -23,6 +23,7 @@ depends: [
   "camelsnakekebab"
   "cohttp-lwt-unix"
   "petrol"
+  "argon2"
   "odoc" {with-doc}
 ]
 build: [
