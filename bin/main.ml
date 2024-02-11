@@ -66,7 +66,7 @@ let create_user username =
       let open Lwt_result.Syntax in
       let* conn = Caqti_lwt.connect @@ Uri.of_string sql_uri in
       let* () = Petrol.StaticSchema.initialise Models.Schema.schema conn in
-      match Auth.Password.hash_password password1 with
+      match Auth_utils.Password.hash_password password1 with
       | Ok (_, encoded) ->
         let* () = Models.User.insert_user ~username ~password:encoded conn in
         Lwt.return_ok ()
