@@ -31,11 +31,23 @@ let api_routes : Dream.route list =
   ]
 ;;
 
+let require_login inner_handler req =
+  match Dream.session "user" req with
+  | Some _ -> inner_handler req
+  | None -> Dream.redirect req "/login"
+;;
+
 let routes : Dream.route list =
-  [ Dream.get "/" Views.Index.get
-  ; Dream.get "/settings" Views.Settings.get
-  ; Dream.get "/static/**" @@ Dream.static "static/"
-  ; Dream.scope "/api" [ Dream.origin_referrer_check ] api_routes
-  ; Dream_livereload.route ()
+  [ Dream.get "/login" Views.Auth.login_get
+  ; Dream.post "/login" Views.Auth.login_post
+  ; Dream.scope
+      "/"
+      [ require_login ]
+      [ Dream.get "/" Views.Index.get
+      ; Dream.get "/settings" Views.Settings.get
+      ; Dream.get "/static/**" @@ Dream.static "static/"
+      ; Dream.scope "/api" [ Dream.origin_referrer_check ] api_routes
+      ; Dream_livereload.route ()
+      ]
   ]
 ;;

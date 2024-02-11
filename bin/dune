@@ -10,6 +10,6 @@
   etl
   router
   argon2
-  auth)
+  auth_utils)
  (preprocess
   (pps ppx_deriving.show)))
