@@ -23,6 +23,8 @@ depends: [
   "camelsnakekebab"
   "cohttp-lwt-unix"
   "petrol"
+  "ppx_deriving_yojson"
+  "ocamlformat"
   "odoc" {with-doc}
 ]
 build: [
