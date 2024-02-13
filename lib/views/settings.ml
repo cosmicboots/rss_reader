@@ -30,19 +30,16 @@ let new_feed req =
         ]
       [ Dream.csrf_tag req |> Unsafe.data
       ; div ~a:[ a_id "form-msg" ] []
-      ; label ~a:[ a_label_for "name" ] [ txt "Name" ]
-      ; br ()
-      ; input ~a:[ a_name "name"; a_placeholder "Name" ] ()
-      ; br ()
-      ; label ~a:[ a_label_for "desc" ] [ txt "Description" ]
-      ; br ()
-      ; input ~a:[ a_name "desc"; a_placeholder "Description" ] ()
-      ; br ()
-      ; label ~a:[ a_label_for "uri" ] [ txt "URI" ]
-      ; br ()
-      ; input ~a:[ a_name "uri"; a_placeholder "URI" ] ()
-      ; br ()
-      ; button ~a:[ a_button_type `Submit ] [ txt "Add Feed" ]
+      ; Sl.input ~a:[ a_name "name"; a_placeholder "Name"; a_label "Name" ] []
+      ; Sl.input
+          ~a:
+            [ a_name "desc"
+            ; a_placeholder "Description"
+            ; a_label "Description"
+            ]
+          []
+      ; Sl.input ~a:[ a_name "uri"; a_placeholder "URI"; a_label "URI" ] []
+      ; Sl.button ~a:[ a_button_type `Submit ] [ txt "Add Feed" ]
       ])
 ;;
 
