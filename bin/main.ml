@@ -7,7 +7,7 @@ let start_dream port interface =
   Dream.run ~port ~interface
   @@ Dream.logger
   @@ Dream.sql_pool sql_uri
-  @@ Dream.memory_sessions
+  @@ Dream.cookie_sessions
   @@ Dream.flash
   (*@@ Dream_livereload.inject_script ()*)
   @@ Dream.router Router.routes
