@@ -4,7 +4,7 @@ open Snippets.Utils
 
 let scripts () =
   Html.
-    [ script ~a:[ a_src "https://unpkg.com/htmx.org@1.9.4" ] @@ txt ""
+    [ script ~a:[ a_src "https://unpkg.com/htmx.org@2.0.0-alpha2" ] @@ txt ""
     ; style [ txt {|
 :not(:defined) {
   visibility: hidden;

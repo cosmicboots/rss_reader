@@ -9,21 +9,23 @@ let page req =
         ; form
             ~a:[ a_method `Post ]
             [ Dream.csrf_tag req |> Unsafe.data
-            ; input
+            ; Sl.input
                 ~a:
                   [ a_input_type `Text
                   ; a_name "username"
                   ; a_placeholder "Username"
+                  ; a_label "Username"
                   ]
-                ()
-            ; input
+                []
+            ; Sl.input
                 ~a:
                   [ a_input_type `Password
                   ; a_name "password"
                   ; a_placeholder "Password"
+                  ; a_label "Password"
                   ]
-                ()
-            ; input ~a:[ a_input_type `Submit; a_value "Login" ] ()
+                []
+            ; Sl.input ~a:[ a_input_type `Submit; a_value "Login" ] []
             ]
         ])
 ;;

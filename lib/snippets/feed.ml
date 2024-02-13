@@ -8,10 +8,10 @@ let feed_elt (feed : Models.Channel.t) =
       ; td [ txt feed.desc ]
       ; td [ txt feed.uri ]
       ; td
-          [ button
+          [ Sl.button
               ~a:[ Hx.get @@ sprintf "/api/feeds/%d/edit" feed.id ]
               [ txt "Edit" ]
-          ; button
+          ; Sl.button
               ~a:
                 [ Hx.confirm "Are you sure you want to delete?"
                 ; Hx.delete @@ sprintf "/api/feeds/%d" feed.id
@@ -29,10 +29,10 @@ let feed_edit_elt (feed : Models.Channel.t) req =
       ; td [ input ~a:[ a_name "uri"; a_value feed.uri ] () ]
       ; td
           [ Dream.csrf_tag req |> Unsafe.data
-          ; button
+          ; Sl.button
               ~a:[ Hx.get @@ sprintf "/api/feeds/%d" feed.id ]
               [ txt "Cancel" ]
-          ; button
+          ; Sl.button
               ~a:
                 [ Hx.include_ (`Closest "tr")
                 ; Hx.put @@ sprintf "/api/feeds/%d" feed.id
