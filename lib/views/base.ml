@@ -70,7 +70,13 @@ let setup_page ~title:title_ req body =
            ; a_style "height:100%"
            ]
          (head (title @@ txt title_)
-          @@ [ meta ~a:[ a_content "width=device-width, initial-scale=1" ] () ]
+          @@ [ meta
+                 ~a:
+                   [ a_name "viewport"
+                   ; a_content "width=device-width, initial-scale=1"
+                   ]
+                 ()
+             ]
           @ scripts ())
          (body
             ~a:

@@ -51,9 +51,16 @@ let get req =
   @@ Lwt.return
        Html.(
          div
-           [ h2 [ txt "Current Feeds" ]
-           ; feeds
-           ; h2 [ txt "Add a Feed" ]
-           ; new_feed req
+           ~a:[ a_style "margin: 0 auto; max-width: 800px;" ]
+           [ Sl.card
+               ~a:[ a_style "width: 100%; margin: 1rem auto;" ]
+               [ h2 ~a:[ Sl.Util.slot "header" ] [ txt "Current Feeds" ]
+               ; feeds
+               ]
+           ; Sl.card
+               ~a:[ a_style "width:100%; margin: 1rem auto;" ]
+               [ h2 ~a:[ Sl.Util.slot "header" ] [ txt "Add a Feed" ]
+               ; new_feed req
+               ]
            ])
 ;;
