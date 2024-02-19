@@ -20,6 +20,7 @@
  (depends
   (ocaml
    (>= 5))
+  ocamlformat
   cmdliner
   dune
   dream
@@ -29,6 +30,7 @@
   caqti-dynload
   caqti-driver-sqlite3
   ppx_deriving
+  ppx_deriving_yojson
   tyxml
   rss
   petrol

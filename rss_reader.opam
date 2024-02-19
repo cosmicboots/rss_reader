@@ -8,6 +8,7 @@ homepage: "https://github.com/cosmicboots/rss_reader"
 bug-reports: "https://github.com/cosmicboots/rss_reader/issues"
 depends: [
   "ocaml" {>= "5"}
+  "ocamlformat"
   "cmdliner"
   "dune" {>= "3.8"}
   "dream"
@@ -17,6 +18,7 @@ depends: [
   "caqti-dynload"
   "caqti-driver-sqlite3"
   "ppx_deriving"
+  "ppx_deriving_yojson"
   "tyxml"
   "rss"
   "petrol"
