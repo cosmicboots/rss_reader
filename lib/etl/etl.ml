@@ -39,10 +39,7 @@ let translate_chan ~chan_id chan =
         , Option.value
             ~default:""
             (let open Option in
-             itm.item_guid
-             >>| function
-             | Rss_types.Guid_name x -> x
-             | Rss_types.Guid_permalink x -> Uri.to_string x)
+             itm.item_link >>| Uri.to_string)
         , Option.value ~default:Ptime.epoch itm.item_pubdate
         , chan_id
         , Option.value ~default:"" itm.item_desc
