@@ -73,3 +73,10 @@ let login_post req =
   in
   Dream.redirect req "/"
 ;;
+
+let logout req =
+  let open Lwt.Syntax in
+  let* () = Dream.drop_session_field req "user" in
+  Dream.redirect req "/"
+;;
+

@@ -32,7 +32,7 @@ let api_routes : Dream.route list =
 ;;
 
 let require_login inner_handler req =
-  match Dream.session "user" req with
+  match Dream.session_field req "user" with
   | Some _ -> inner_handler req
   | None -> Dream.redirect req "/login"
 ;;
@@ -40,6 +40,7 @@ let require_login inner_handler req =
 let routes : Dream.route list =
   [ Dream.get "/login" Views.Auth.login_get
   ; Dream.post "/login" Views.Auth.login_post
+  ; Dream.get "/logout" Views.Auth.logout
   ; Dream.scope
       "/"
       [ require_login ]

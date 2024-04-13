@@ -45,3 +45,6 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/cosmicboots/rss_reader.git"
+pin-depends: [
+  ["dream.dev" "git+https://github.com/aantron/dream#master"]
+]

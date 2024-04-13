@@ -17,7 +17,7 @@ let run_etl () =
   let f =
     printf "\n=== Running ETL ===\n";
     let open Lwt_result.Syntax in
-    let* conn = Caqti_lwt.connect @@ Uri.of_string sql_uri in
+    let* conn = Caqti_lwt_unix.connect @@ Uri.of_string sql_uri in
     let* () = Petrol.StaticSchema.initialise Models.Schema.schema conn in
     let open Lwt.Syntax in
     let* () = Etl.run conn in
@@ -65,7 +65,7 @@ let create_user username =
       Lwt.return (Error (`Msg "Passwords do not match")))
     else
       let open Lwt_result.Syntax in
-      let* conn = Caqti_lwt.connect @@ Uri.of_string sql_uri in
+      let* conn = Caqti_lwt_unix.connect @@ Uri.of_string sql_uri in
       let* () = Petrol.StaticSchema.initialise Models.Schema.schema conn in
       match Auth_utils.Password.hash_password password1 with
       | Ok (_, encoded) ->
