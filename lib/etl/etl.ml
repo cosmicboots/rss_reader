@@ -72,14 +72,14 @@ let run ?chan_id db =
         (fun x ->
           load_chan db x
           >|= (function
-                | Ok () -> Ok ()
-                | Error (`Response_failed m as e) ->
-                  let msg = Format.asprintf "%a\n" Caqti_error.pp_msg m.msg in
-                  (* Ignore unique constraint failures. *)
-                  if String.is_prefix ~prefix:"UNIQUE constraint failed" msg
-                  then Ok ()
-                  else Error e
-                | Error e -> Error e)
+                 | Ok () -> Ok ()
+                 | Error (`Response_failed m as e) ->
+                   let msg = Format.asprintf "%a\n" Caqti_error.pp_msg m.msg in
+                   (* Ignore unique constraint failures. *)
+                   if String.is_prefix ~prefix:"UNIQUE constraint failed" msg
+                   then Ok ()
+                   else Error e
+                 | Error e -> Error e)
           >>= Caqti_lwt.or_fail)
         raw_items)
     chan_ids

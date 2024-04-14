@@ -48,10 +48,7 @@ let toolbar darkmode =
           [ div
               ~a:[ a_style "width: max-content;" ]
               [ Sl.button
-                  ~a:
-                    [ Sl.Button.variant `Text
-                    ; Sl.Button.href "/logout"
-                    ]
+                  ~a:[ Sl.Button.variant `Text; Sl.Button.href "/logout" ]
                   [ txt "Logout" ]
               ; Snippets.Darkmode.dark_indicator darkmode
               ]
