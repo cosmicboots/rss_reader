@@ -26,7 +26,20 @@ let get_feed ~id db =
 (** [translate_chan ~chan_id chan] *)
 let translate_chan ~chan_id chan =
   let parse txt =
-    let chan, errors = Rss_io.channel_of_string (Rss_io.make_opts ()) txt in
+    let chan, errors =
+      Rss_io.channel_of_string
+        (Rss_io.make_opts
+           ~read_item_data:(fun x ->
+             Some
+               (String.concat ~sep:""
+                @@ List.map x ~f:(fun x ->
+                  let s =
+                    Rss_io.string_of_xml ~ns_prefix:(fun _ -> Some "") x
+                  in
+                  s)))
+           ())
+        txt
+    in
     if List.length errors > 0
     then Result.Error (ParseError.Channel errors)
     else Result.Ok chan
@@ -42,7 +55,14 @@ let translate_chan ~chan_id chan =
              itm.item_link >>| Uri.to_string)
         , Option.value ~default:Ptime.epoch itm.item_pubdate
         , chan_id
-        , Option.value ~default:"" itm.item_desc
+        , (match itm.item_data with
+           | None | Some "" ->
+             let x = Option.value ~default:"" itm.item_desc in
+             (* printf "item_desc: %s\n" x; *)
+             x
+           | Some x ->
+             (* printf "item_data: %s\n" x; *)
+             x)
         , List.map ~f:(fun x -> x.cat_name) itm.item_categories ))
       x.ch_items
   | Error e -> failwith @@ ParseError.show e
