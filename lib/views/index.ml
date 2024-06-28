@@ -43,12 +43,15 @@ let page req =
   let* sidebar = sidebar req in
   Lwt.return
     Html.(
-      Sl.split_panel
-        ~a:
-          [ Sl.SplitPanel.position 25
-          ; a_style "flex: 1 1 1px; overflow: auto;"
-          ]
-        [ sidebar; content () ])
+      if Utils.is_mobile req
+      then div [ sidebar; content () ]
+      else
+        Sl.split_panel
+          ~a:
+            [ Sl.SplitPanel.position 25
+            ; a_style "flex: 1 1 1px; overflow: auto;"
+            ]
+          [ sidebar; content () ])
 ;;
 
 (** The get endpoint for the index page *)

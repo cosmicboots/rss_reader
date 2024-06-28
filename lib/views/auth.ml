@@ -79,4 +79,3 @@ let logout req =
   let* () = Dream.drop_session_field req "user" in
   Dream.redirect req "/"
 ;;
-

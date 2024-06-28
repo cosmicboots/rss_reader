@@ -1,6 +1,7 @@
 (executable
  (public_name rss_reader)
  (name main)
+ (flags :standard -cclib -largon2) ; Needed for password hashing
  (libraries
   core
   dream
