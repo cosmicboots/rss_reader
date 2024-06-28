@@ -28,14 +28,22 @@ let translate_chan ~chan_id chan =
   let chan = Syndic.Rss2.parse @@ Xmlm.make_input (`String (0, chan)) in
   List.map
     ~f:(fun itm ->
-      ( Option.value ~default:"" @@ Option.map itm.source ~f:(fun x -> x.data)
+      let title, desc =
+        match itm.story with
+        | All (t, _, d) -> Some t, Some d
+        | Title t -> Some t, None
+        | Description (_, s) -> None, Some s
+      in
+      ( Option.value ~default:"" title
       , Option.value
           ~default:""
           (let open Option in
            itm.link >>| Uri.to_string)
       , Option.value ~default:Ptime.epoch itm.pubDate
       , chan_id
-      , snd itm.content
+      , (if String.(snd itm.content <> "")
+         then snd itm.content
+         else Option.value ~default:"" desc)
       , Option.value ~default:[]
         @@ Option.map itm.category ~f:(fun x -> String.split x.data ~on:'/') ))
     chan.items
