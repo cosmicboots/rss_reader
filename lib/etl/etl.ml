@@ -25,47 +25,20 @@ let get_feed ~id db =
 
 (** [translate_chan ~chan_id chan] *)
 let translate_chan ~chan_id chan =
-  let parse txt =
-    let chan, errors =
-      Rss_io.channel_of_string
-        (Rss_io.make_opts
-           ~read_item_data:(fun x ->
-             Some
-               (String.concat ~sep:""
-                @@ List.map x ~f:(fun x ->
-                  let s =
-                    Rss_io.string_of_xml ~ns_prefix:(fun _ -> Some "") x
-                  in
-                  s)))
-           ())
-        txt
-    in
-    if List.length errors > 0
-    then Result.Error (ParseError.Channel errors)
-    else Result.Ok chan
-  in
-  match parse chan with
-  | Ok x ->
-    List.map
-      ~f:(fun itm ->
-        ( Option.value ~default:"" itm.item_title
-        , Option.value
-            ~default:""
-            (let open Option in
-             itm.item_link >>| Uri.to_string)
-        , Option.value ~default:Ptime.epoch itm.item_pubdate
-        , chan_id
-        , (match itm.item_data with
-           | None | Some "" ->
-             let x = Option.value ~default:"" itm.item_desc in
-             (* printf "item_desc: %s\n" x; *)
-             x
-           | Some x ->
-             (* printf "item_data: %s\n" x; *)
-             x)
-        , List.map ~f:(fun x -> x.cat_name) itm.item_categories ))
-      x.ch_items
-  | Error e -> failwith @@ ParseError.show e
+  let chan = Syndic.Rss2.parse @@ Xmlm.make_input (`String (0, chan)) in
+  List.map
+    ~f:(fun itm ->
+      ( Option.value ~default:"" @@ Option.map itm.source ~f:(fun x -> x.data)
+      , Option.value
+          ~default:""
+          (let open Option in
+           itm.link >>| Uri.to_string)
+      , Option.value ~default:Ptime.epoch itm.pubDate
+      , chan_id
+      , snd itm.content
+      , Option.value ~default:[]
+        @@ Option.map itm.category ~f:(fun x -> String.split x.data ~on:'/') ))
+    chan.items
 ;;
 
 let load_chan db (title, guid, date, channel_id, desc, categories) =

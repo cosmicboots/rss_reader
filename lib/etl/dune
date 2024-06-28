@@ -1,5 +1,5 @@
 (library
  (name etl)
- (libraries core cohttp cohttp-lwt-unix rss models)
+ (libraries core cohttp cohttp-lwt-unix syndic models)
  (preprocess
   (pps ppx_deriving.show)))
