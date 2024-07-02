@@ -4,28 +4,35 @@ open Base
 let page req =
   Lwt.return
     Html.(
-      Sl.card
-        [ h1 [ txt "Login" ]
-        ; form
-            ~a:[ a_method `Post ]
-            [ Dream.csrf_tag req |> Unsafe.data
-            ; Sl.input
-                ~a:
-                  [ a_input_type `Text
-                  ; a_name "username"
-                  ; a_placeholder "Username"
-                  ; a_label "Username"
-                  ]
-                []
-            ; Sl.input
-                ~a:
-                  [ a_input_type `Password
-                  ; a_name "password"
-                  ; a_placeholder "Password"
-                  ; a_label "Password"
-                  ]
-                []
-            ; Sl.input ~a:[ a_input_type `Submit; a_value "Login" ] []
+      div
+        [ Sl.card
+            ~a:[ a_style "max-width: 800px; margin: auto; display: block;" ]
+            [ h1 [ txt "Login" ]
+            ; form
+                ~a:[ a_method `Post ]
+                [ Dream.csrf_tag req |> Unsafe.data
+                ; Sl.input
+                    ~a:
+                      [ a_input_type `Text
+                      ; a_name "username"
+                      ; a_placeholder "Username"
+                      ; a_label "Username"
+                      ]
+                    []
+                ; br ()
+                ; Sl.input
+                    ~a:
+                      [ a_input_type `Password
+                      ; a_name "password"
+                      ; a_placeholder "Password"
+                      ; a_label "Password"
+                      ]
+                    []
+                ; br ()
+                ; Sl.button
+                    ~a:[ a_button_type `Submit; Sl.Button.variant `Primary ]
+                    [ txt "Login" ]
+                ]
             ]
         ])
 ;;
