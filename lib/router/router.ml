@@ -24,7 +24,6 @@ let api_routes : Dream.route list =
   ; Dream.get "/posts/:post_id" @@ api_handler Snippets.Posts.get
   ; Dream.get "/feeds/:feed_id" @@ api_handler Snippets.Feed.get
   ; Dream.get "/feeds/:feed_id/edit" @@ api_handler Snippets.Feed.get_edit
-  ; Dream.get "/toggle-darkmode" @@ api_handler Snippets.Darkmode.get
   ; Dream.put "/feeds/:feed_id" @@ api_handler Snippets.Feed.put
   ; Dream.post "/feeds" @@ api_handler Snippets.Feed.post
   ; Dream.delete "/feeds/:feed_id" @@ unit_api_handler Snippets.Feed.delete
@@ -41,6 +40,7 @@ let routes : Dream.route list =
   [ Dream.get "/login" Views.Auth.login_get
   ; Dream.post "/login" Views.Auth.login_post
   ; Dream.get "/logout" Views.Auth.logout
+  ; Dream.get "/api/toggle-darkmode" @@ api_handler Snippets.Darkmode.get
   ; Dream.scope
       "/"
       [ require_login ]
