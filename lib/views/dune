@@ -1,5 +1,5 @@
 (library
  (name views)
- (libraries dream models tyxml hx rss snippets sl auth_utils)
+ (libraries dream models tyxml hx snippets sl auth_utils)
  (preprocess
   (pps ppx_deriving.show)))

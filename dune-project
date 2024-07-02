@@ -32,7 +32,7 @@
   ppx_deriving
   ppx_deriving_yojson
   tyxml
-  rss
+  syndic
   petrol
   camelsnakekebab
   cohttp-lwt-unix

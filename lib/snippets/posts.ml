@@ -52,7 +52,12 @@ let get req =
                         display:block;
                      |}
           ]
-        [ div
+        [ style [ txt {|
+          img {
+            max-width: 100%;
+          }
+        |} ]
+        ; div
             ~a:[ Sl.Util.slot "header" ]
             (a
                ~a:[ a_href itm.guid; a_target "_blank" ]
