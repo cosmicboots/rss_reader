@@ -5,6 +5,7 @@ let sql_uri = "sqlite3:db.sqlite"
 
 let start_dream port interface =
   Dream.run ~port ~interface
+  @@ Dream.set_secret "super_secret_key"
   @@ Dream.logger
   @@ Dream.sql_pool sql_uri
   @@ Dream.cookie_sessions
