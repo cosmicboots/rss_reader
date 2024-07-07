@@ -60,7 +60,11 @@ let page req =
                 ]
               [ sidebar
               ; div
-                  ~a:[ Sl.Util.slot "end"; a_id "article-list" ]
+                  ~a:
+                    [ Sl.Util.slot "end"
+                    ; a_id "article-list"
+                    ; a_style "overflow: auto; height: 100%;"
+                    ]
                   [ txt "hello" ]
               ]
           ; content ()
