@@ -7,11 +7,12 @@ open Base
 let sidebar req =
   let open Lwt.Syntax in
   let* posts = Snippets.Posts.list req in
+  let* channels = Snippets.Channels.list req in
   Lwt.return
     Html.(
       div
         ~a:[ Sl.Util.slot "start"; a_style "overflow: auto; padding: 1rem;" ]
-        [ h1 [ txt "Article List" ]
+        [ h1 [ txt "Categories." ]
         ; Sl.button
           (* TODO: This refresh button should run the etl batch to refresh the feeds *)
             ~a:[ Hx.get "/api/posts"; Hx.target (`Css "#post-list") ]
@@ -23,6 +24,7 @@ let sidebar req =
                 []
             ; txt "Refresh"
             ]
+        ; channels
         ; Sl.divider []
         ; div ~a:[ a_id "post-list" ] [ posts ]
         ])
@@ -48,10 +50,21 @@ let page req =
       else
         Sl.split_panel
           ~a:
-            [ Sl.SplitPanel.position 25
-            ; a_style "flex: 1 1 1px; overflow: auto;"
+            [ Sl.SplitPanel.position 50
+            ; a_style "overflow: auto; height: 100%;"
             ]
-          [ sidebar; content () ])
+          [ Sl.split_panel
+              ~a:
+                [ Sl.Util.slot "start"
+                ; a_style "overflow: auto; height: 100%;"
+                ]
+              [ sidebar
+              ; div
+                  ~a:[ Sl.Util.slot "end"; a_id "article-list" ]
+                  [ txt "hello" ]
+              ]
+          ; content ()
+          ])
 ;;
 
 (** The get endpoint for the index page *)

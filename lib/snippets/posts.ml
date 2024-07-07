@@ -52,11 +52,14 @@ let get req =
                         display:block;
                      |}
           ]
-        [ style [ txt {|
+        [ style
+            [ txt
+                {|
           img {
             max-width: 100%;
           }
-        |} ]
+        |}
+            ]
         ; div
             ~a:[ Sl.Util.slot "header" ]
             (a
