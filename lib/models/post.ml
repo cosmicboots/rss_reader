@@ -107,6 +107,7 @@ let get_posts_by_channel ~chan:target_chan db =
   let open Lwt_result.Infix in
   Query.select all_fields ~from:post_table
   |> Query.where Expr.(channel_id = i target_chan)
+  |> Query.order_by ~direction:`DESC date
   |> Request.make_many
   |> Petrol.collect_list db
   >|= List.map ~f:(fun x -> t_of_tuple x)
