@@ -1,32 +1,28 @@
 open Core
 open Tyxml
 
-(** [list req] returns a structured shoelace tree with all the posts
+(** [list req] returns a shoelace tree with all the posts
 
     Clicking on a post will trigger an AJAX request to [/api/posts/<id>] *)
 let list req =
+  let chan_id = int_of_string @@ Dream.param req "chan_id" in
   let open Lwt.Syntax in
-  let* itms = Dream.sql req Models.Post.get_posts in
+  let* itms =
+    Dream.sql req @@ Models.Post.get_posts_by_channel ~chan:chan_id
+  in
   let* itms = Caqti_lwt.or_fail itms in
-  let itms = List.Assoc.sort_and_group ~compare:String.compare itms in
-  Dream.log "Pulled %d items from the db" @@ List.length itms;
   Lwt.return
     Html.(
       Sl.tree ~a:[ a_style "--indent-guide-width: 2px" ]
       @@ List.map
-           ~f:(fun (chan, itms) ->
+           ~f:(fun itm ->
              Sl.tree_item
-             @@ [ txt chan ]
-             @ List.map
-                 ~f:(fun itm ->
-                   Sl.tree_item
-                     ~a:
-                       [ Hx.get @@ sprintf "/api/posts/%d" itm.id
-                       ; Hx.target (`Css "#article-content")
-                       ; Hx.swap `InnerHTML
-                       ]
-                     [ txt itm.title ])
-                 itms)
+               ~a:
+                 [ Hx.get @@ sprintf "/api/posts/%d" itm.id
+                 ; Hx.target (`Css "#article-content")
+                 ; Hx.swap `InnerHTML
+                 ]
+               [ txt itm.title ])
            itms)
 ;;
 

@@ -23,13 +23,3 @@ let list req =
   let* itms = Caqti_lwt.or_fail itms in
   Lwt.return (Sl.tree @@ List.map entry_with_desc itms)
 ;;
-
-let get req =
-  let chan_id = int_of_string @@ Dream.param req "chan_id" in
-  let* itms =
-    Dream.sql req @@ Models.Post.get_posts_by_channel ~chan:chan_id
-  in
-  let* itms = Caqti_lwt.or_fail itms in
-  Lwt.return
-    Html.(ul @@ List.map (fun x -> li [ txt x.Models.Post.title ]) itms)
-;;
